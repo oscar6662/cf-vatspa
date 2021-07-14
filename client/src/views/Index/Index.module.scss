@@ -1,0 +1,48 @@
+.root{
+    height: calc(100vh);
+    background: url(../../assets/img/aboutus.jpg);
+    background-repeat: no-repeat;
+    background-size: cover;
+    background-position: center;
+    overflow: hidden;
+    display:flex;
+    justify-content: space-around;
+    flex-direction: column;
+    align-items: center;
+    &__box{
+        margin-top: 100px;
+        display:flex;
+        flex-direction: column;
+        justify-content: space-between;
+        align-items: center;
+        height:150px;
+        width:auto;
+        padding:1rem;
+    }
+    &__title{
+        text-align: center;
+        h2{
+            font-size: 18px;
+            font-weight: 500;
+        }
+    }
+    &__button{
+        width: 100%;
+        padding: 5px 0;
+        background-color: rgba(4, 4, 180, 0.74);
+        text-align: center;
+        border-radius: 5px;
+        text-decoration: none;
+        color: white;   
+        &:hover{
+            transition: 0.3s;
+            background-color: rgb(4, 4, 133);
+        }
+    }
+    &__logo{
+        img{
+            height:100px;
+            width:auto;
+        }
+    }
+}
