@@ -3,7 +3,7 @@ import React from 'react';
 import Load from '../../components/Load/Load';
 import s from './Profile.module.scss';
 
-export default function Profile(data){
+export default function Profile(){
     const [isLoading, setIsLoading] = useState(false);
     const [isError, setIsError] = useState(false);
     const [data, setData] = useState('');
