@@ -60,7 +60,7 @@ router.get('/api/auth/callback', async (req, res) => {
     let token;
     if(await userExists(d.data.cid)){
       //TODO refresh token
-      return res.redirect('/profile')
+      return res.redirect('/profile');
     } else{
       try {
         token = await createUser(d.data, r);
@@ -88,7 +88,7 @@ export async function requireAuthentication(req, res, next) {
 
   if (verify === false) return res.status(401).json({ error: 'token verification failed' });
 
-  const q = 'SELECT date FROM token WHERE jwt = ($1)';
+  const q = 'SELECT date FROM users WHERE jwt = ($1)';
   try {
     const r = await query(q, [token]);
     if (r.rows.length < 0) return res.status(401).json({ error: 'No token found' });
