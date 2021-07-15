@@ -15,6 +15,7 @@ export default function Profile(){
         try {
             const r = await fetch('/api/user');
             const j = await r.json();
+            console.log(j);
             setData(j);
         } catch (error) {
             setIsError(true)

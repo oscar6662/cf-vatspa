@@ -21,37 +21,47 @@ export async function userData(token) {
   }
 }
 
-export async function userExists(id){
+export async function userExists(id) {
   const q = 'SELECT COUNT(1) FROM users WHERE id = $1';
   try {
     const r = await query(q, [id]);
-    if(r.rows[0].count == 1) return true;
+    if (r.rows[0].count === 1) return true;
   } catch (error) {
     return false;
   }
   return false;
 }
 
+/**
 export async function updateUserToken(){
-  
-}
 
-export async function createUser(data, r){
+}
+*/
+
+export async function createUser(data, r) {
   const payload = { email: data.cid };
   const tokenOptions = { expiresIn: r.expires_in };
   const token = jwt.sign(payload, process.env.JWT_SECRET, tokenOptions);
   const expiry = new Date(Date.now() + r.expires_in * 1000);
-  const q = 'INSERT INTO users (id, user_name, user_email, mentor, admin, jwt, access, refresh, date) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9)';
-  const q2 = 'CREATE TABLE IF NOT EXISTS user_'+data.cid+' ('+
-    'id integer unique not null,'+
-    'S1 boolean not null,'+
-    'S2 boolean not null,'+
-    'S3 boolean not null,'+
-    'C1 boolean not null);';
-  const q3 = 'INSERT INTO user_'+data.cid+' (id, S1, S2, S3, C1) VALUES($1, false, false, false, false)';
+  const q = 'INSERT INTO users'
+    + '(id, user_name, user_email, mentor, admin, jwt, access, refresh, date)'
+    + 'VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9)';
+
+  const q2 = `CREATE TABLE IF NOT EXISTS user_${data.cid} (`
+    + 'id integer unique not null,'
+    + 'S1 boolean not null,'
+    + 'S2 boolean not null,'
+    + 'S3 boolean not null,'
+    + 'C1 boolean not null);';
+
+  const q3 = `INSERT INTO user_${data.cid}`
+    + '(id, S1, S2, S3, C1) VALUES($1, false, false, false, false)';
+
   try {
-    
-    const hoa = await query(q, [data.cid, data.personal.name_full, data.personal.email, false, false, token, r.access_token, r.refresh_token, expiry]);
+    await query(q,
+      [data.cid, data.personal.name_full,
+        data.personal.email, false, false,
+        token, r.access_token, r.refresh_token, expiry]);
     await query(q2);
     await query(q3, [data.cid]);
   } catch (error) {

@@ -32,9 +32,9 @@ export default function App() {
       <Router>
         <Switch>
           <Route exact path="/" >
-            { console.log('hola'),loggedIn ? <Redirect to="/profile" /> : <Index></Index> }
+            {loggedIn ? <Redirect to="/profile" /> : <Index></Index> }
           </Route>
-          {loggedIn && (console.log('holas'),
+          {loggedIn && (
           <Layout>
             <Route exact path="/profile" children={ <Profile/> } />
             </Layout>
