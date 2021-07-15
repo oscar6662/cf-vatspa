@@ -44,7 +44,7 @@ return(
                           <div className={s.main__stats}>
                               <div className={s.main__stats__box}>
                                   <p>Rango actual</p>
-                                  <h2>{data.vatsim.short+' '+data.vatsim.long}</h2>
+                                  <h2>{data.vatsim.rating.short+' '+data.vatsim.rating.long}</h2>
                               </div>
                               <div className={s.main__stats__box}>
                                   <p>vACC ascrito</p>
