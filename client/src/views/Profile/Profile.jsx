@@ -1,5 +1,6 @@
-import React from 'react';
+import React, {useEffect, useState} from 'react';
 
+import TrainingButton from '../../components/Buttons/TrainingButton/TrainingButton';
 import Load from '../../components/Load/Load';
 import s from './Profile.module.scss';
 
