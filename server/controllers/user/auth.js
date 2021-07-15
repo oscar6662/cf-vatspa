@@ -103,6 +103,8 @@ export async function requireAuthentication(req, res, next) {
 
 export async function isAuthenticated(req) {
   const { token } = req.cookies;
+  console.log('token:');
+  console.log(token);
   if (token == null) return false;
   const verify = jwt.verify(token, process.env.JWT_SECRET, (err, user) => {
     if (err) return false;
@@ -112,7 +114,7 @@ export async function isAuthenticated(req) {
 
   if (verify === false) return false;
 
-  const q = 'SELECT date FROM token WHERE jwt = ($1)';
+  const q = 'SELECT id FROM users WHERE jwt = ($1)';
   try {
     const r = await query(q, [token]);
     if (r.rows.length < 0) return false;

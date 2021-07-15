@@ -52,11 +52,12 @@ export async function createUser(data, r){
   try {
     
     const hoa = await query(q, [data.cid, data.personal.name_full, data.personal.email, false, false, token, r.access_token, r.refresh_token, expiry]);
-    console.log(hoa);
     await query(q2);
     await query(q3, [data.cid]);
   } catch (error) {
+    console.log(error);
     return error;
   }
+  console.log(token);
   return token;
 }
