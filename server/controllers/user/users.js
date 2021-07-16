@@ -81,7 +81,8 @@ export async function createUser(data, r) {
     await query(q,
       [data.cid, data.personal.name_full,
         data.personal.email, false, false,
-        token, r.access_token, r.refresh_token, expiry]);
+        token, r.access_token, r.refresh_token, expiry,
+      ]);
     await query(q2);
     await query(q3, [data.cid]);
   } catch (error) {

@@ -85,7 +85,10 @@ return(
                                         {validTraining ? (
                                             <a href = "/req/training">Empieza tu formación</a>
                                         ):(
-                                           <p>No puedes empezar tu formación</p>    
+                                            <div>
+                                                <a href ="https://vatspa.es/normativa/transferencia-VACC">Transferirte a VATSPA</a>    
+                                                <a href = "/req/training/visitor">Solicitar entrenamiento para ser Visitante</a>    
+                                            </div>
                                         )}
                                     </div>
                                  </div>

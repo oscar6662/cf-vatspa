@@ -65,10 +65,11 @@ export async function isAuthenticated(req) {
 router.get('/api/auth', (req, res) => {
   try {
     // eslint-disable-next-line max-len
-    res.redirect(`${process.env.REACT_APP_API_URL}/oauth/authorize?client_id=${process.env.client_id}
-    &redirect_uri=${process.env.host}/api/auth/callback
-    &response_type=code
-    &required_scopes=full_name+email+vatsim_details`);
+    const link = `${process.env.REACT_APP_API_URL}/oauth/authorize?client_id=${process.env.client_id}`
+    + `&redirect_uri=${process.env.host}/api/auth/callback`
+    + '&response_type=code'
+    + '&scope=full_name+email+vatsim_details';
+    res.redirect(link);
   } catch (error) {
     res.status(401).json({ error });
   }
@@ -118,6 +119,8 @@ router.get('/api/auth/callback', async (req, res) => {
     }
 
     try {
+      console.log('data:');
+      console.log(d.data);
       token = await createUser(d.data, r);
     } catch (error) {
       return res.sendStatus(403);
