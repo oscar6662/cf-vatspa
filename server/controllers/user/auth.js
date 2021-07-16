@@ -64,8 +64,8 @@ export async function isAuthenticated(req) {
 
 router.get('/api/auth', (req, res) => {
   try {
-    res.redirect(`
-    ${process.env.REACT_APP_API_URL}/oauth/authorize?client_id=${process.env.client_id}
+    // eslint-disable-next-line max-len
+    res.redirect(`${process.env.REACT_APP_API_URL}/oauth/authorize?client_id=${process.env.client_id}
     &redirect_uri=${process.env.host}/api/auth/callback
     &response_type=code
     &required_scopes=full_name+email+vatsim_details`);
