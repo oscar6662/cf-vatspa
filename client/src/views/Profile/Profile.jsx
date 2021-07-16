@@ -1,13 +1,13 @@
 import React, {useEffect, useState} from 'react';
 
-import TrainingButton from '../../components/Buttons/TrainingButton/TrainingButton';
 import Load from '../../components/Load/Load';
 import s from './Profile.module.scss';
 
 export default function Profile(){
-    const [isLoading, setIsLoading] = useState(false);
+    const [isLoading, setIsLoading] = useState(true);
     const [isError, setIsError] = useState(false);
-    const [data, setData] = useState('');
+    const [data, setData] = useState([]);
+    const [validTraining, isValidTraining] = useState(false);
   
      useEffect(() => {
       const fetchData = async () => {
@@ -15,7 +15,9 @@ export default function Profile(){
         try {
             const r = await fetch('/api/user');
             const j = await r.json();
-            console.log(j);
+            if (j.vatsim.subdivision.code === 'SPA'){
+                isValidTraining(true);
+            }
             setData(j);
         } catch (error) {
             setIsError(true)
@@ -79,7 +81,13 @@ return(
                              <div className="col-5">
                                  <div className = {s.main__req}>
                                      <h2>Solicitar Training</h2>
-                                     <TrainingButton data = {data}></TrainingButton>
+                                     <div  href ="#" className={s.main__req__box}>
+                                        {validTraining ? (
+                                            <a href = "/req/training">Empieza tu formación</a>
+                                        ):(
+                                           <p>No puedes empezar tu formación</p>    
+                                        )}
+                                    </div>
                                  </div>
 
                              </div>

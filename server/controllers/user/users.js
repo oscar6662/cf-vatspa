@@ -21,6 +21,26 @@ export async function userData(token) {
   }
 }
 
+export async function userIsAdmin(token) {
+  const q = 'SELECT admin FROM users WHERE jwt = $1 ';
+  try {
+    const r = await query(q, [token]);
+    return await r.rows[0].admin;
+  } catch (e) {
+    return { error: e };
+  }
+}
+
+export async function userIsMentor(token) {
+  const q = 'SELECT mentor FROM users WHERE jwt = $1 ';
+  try {
+    const r = await query(q, [token]);
+    return await r.rows[0].mentor;
+  } catch (e) {
+    return { error: e };
+  }
+}
+
 export async function userExists(id) {
   const q = 'SELECT COUNT(1) FROM users WHERE id = $1';
   try {

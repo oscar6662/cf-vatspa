@@ -9,7 +9,11 @@ import {
   isAuthenticated,
   requireAuthentication,
 } from './controllers/user/auth.js';
-import { userData } from './controllers/user/users.js';
+import {
+  userData,
+  userIsAdmin,
+  userIsMentor,
+} from './controllers/user/users.js';
 
 dotenv.config();
 
@@ -38,6 +42,14 @@ app.get('/api/user', requireAuthentication, async (req, res) => {
 app.get('/api/user/name', requireAuthentication, async (req, res) => {
   const data = await userData(req.cookies.token);
   return res.json(data.data.personal.name_full);
+});
+
+app.get('/api/user/admin', requireAuthentication, async (req, res) => {
+  return res.json(await userIsAdmin(req.cookies.token));
+});
+
+app.get('/api/user/mentor', requireAuthentication, async (req, res) => {
+  return res.json(await userIsMentor(req.cookies.token));
 });
 
 app.get('*', (req, res) => {

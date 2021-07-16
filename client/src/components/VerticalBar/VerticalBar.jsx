@@ -6,26 +6,45 @@ import logo from '../../assets/img/VATSPA_LOGO.png';
 export default function VerticalBar(){
   const [isLoading, setIsLoading] = useState(false);
   const [isError, setIsError] = useState(false);
-  const [data, setData] = useState('');
+  const [admin, setAdmin] = useState(false);
+  const [mentor, setMentor] = useState(false);
+  
 
    useEffect(() => {
     const fetchData = async () => {
       setIsLoading(true);
       try {
-          const r = await fetch('/api/user/name');
+          const r = await fetch('/api/user/admin');
           const j = await r.json();
-          setData(String(j));
+          console.log(j);
+          setAdmin(Boolean(j));
+          const r2 = await fetch('/api/user/mentor');
+          const j2 = await r2.json();
+          console.log(j2);
+          setMentor(Boolean(j2));
       } catch (error) {
           setIsError(true)
       }
       setIsLoading(false);
     };
     fetchData();
-  },[!data]);
+  },[admin, mentor]);
+  
   return(
     <div className = {s.nav}>
       <img className={s.nav__logo} src = { logo } alt = ""></img>
       <p>Reservar Posición</p>
+      {!isLoading && (
+        isError ? (
+          <p>Error. No se sabe si eres mentor y/o admin</p>
+        ) : (
+          admin && (
+            <p>Editar Usuarios</p>
+          ),
+          mentor && (
+            <p>Panel de Mentor</p>
+          )
+      ))}
     </div>
   );
 }
