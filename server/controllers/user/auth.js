@@ -64,11 +64,11 @@ export async function isAuthenticated(req) {
 
 router.get('/api/auth', (req, res) => {
   try {
-    res.redirect(`${process.env.REACT_APP_API_URL}/oauth/authorize?
-    client_id=${process.env.client_id}
+    res.redirect(`
+    ${process.env.REACT_APP_API_URL}/oauth/authorize?client_id=${process.env.client_id}
     &redirect_uri=${process.env.host}/api/auth/callback
     &response_type=code
-    &scope=full_name+email+vatsim_details`);
+    &required_scopes=full_name+email+vatsim_details`);
   } catch (error) {
     res.status(401).json({ error });
   }

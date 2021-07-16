@@ -3,6 +3,7 @@ import dotenv from 'dotenv';
 import passport from 'passport';
 import path, {dirname} from 'path';
 import cors from 'cors';
+import fetch from 'node-fetch';
 import { fileURLToPath } from 'url';
 import {
   router as authRouter,
@@ -14,6 +15,9 @@ import {
   userIsAdmin,
   userIsMentor,
 } from './controllers/user/users.js';
+import {
+  isAllowedToRequestTraining
+} from './controllers/user/training.js';
 
 dotenv.config();
 
@@ -50,6 +54,16 @@ app.get('/api/user/admin', requireAuthentication, async (req, res) => {
 
 app.get('/api/user/mentor', requireAuthentication, async (req, res) => {
   return res.json(await userIsMentor(req.cookies.token));
+});
+
+app.get('/api/user/reqtraining', async (req, res) => {
+  const d = await fetch(`https://api.vatsim.net/api/ratings/1344329`, {
+        headers: {
+          Accept: 'application/json',
+        },
+      });
+      return res.json(d);
+  //return res.json(await isAllowedToRequestTraining(req.cookies.token));
 });
 
 app.get('*', (req, res) => {
