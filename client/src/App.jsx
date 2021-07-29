@@ -35,8 +35,8 @@ export default function App() {
             {loggedIn ? <Redirect to="/profile" /> : <Index></Index> }
           </Route>
           {loggedIn && (
-          <Layout>
-            <Route exact path="/profile" children={ <Profile/> } />
+            <Layout>
+              <Route exact path="/profile" children={ <Profile/> } />
             </Layout>
           )
           }

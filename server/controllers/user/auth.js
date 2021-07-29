@@ -113,6 +113,7 @@ router.get('/api/auth/callback', async (req, res) => {
   if (d.data.oauth.token_valid === 'true') {
     let token;
     if (await userExists(d.data.cid)) {
+      req.user = d.data.cid;
       // TODO refresh token
 
       return res.redirect('/profile');
@@ -125,6 +126,7 @@ router.get('/api/auth/callback', async (req, res) => {
     } catch (error) {
       return res.sendStatus(403);
     }
+    req.user = d.data.id;
     res.cookie('token', token, {
       expires: new Date(Date.now() + r.expires_in * 1000),
       httpOnly: true,

@@ -13,7 +13,7 @@ import s from './Layout.module.scss';
 
 export default function Layout({ children }) {
   let path = useLocation();
-  if(path.pathname == '/'){
+  if(path.pathname === '/'){
     return (children);
   }
   return (

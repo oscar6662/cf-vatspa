@@ -57,13 +57,12 @@ app.get('/api/user/mentor', requireAuthentication, async (req, res) => {
 });
 
 app.get('/api/user/reqtraining', async (req, res) => {
-  const d = await fetch(`https://api.vatsim.net/api/ratings/1344329`, {
-        headers: {
-          Accept: 'application/json',
-        },
-      });
-      return res.json(d);
-  //return res.json(await isAllowedToRequestTraining(req.cookies.token));
+  return res.json(await isAllowedToRequestTraining(req.cookies.token));
+});
+
+app.get('/api/test', (req, res) => {
+  console.log(req.user);
+  res.json(req.user);
 });
 
 app.get('*', (req, res) => {

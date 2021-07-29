@@ -15,12 +15,15 @@ export default function Profile(){
         try {
             const r = await fetch('/api/user');
             const j = await r.json();
-            if (j.vatsim.subdivision.code === 'SPA'){
-                isValidTraining(true);
-            }
+            console.log(j);
+            const r2 = await fetch('/api/user/reqtraining');
+            const j2 = await r2.json();
+            console.log(j2);
+            isValidTraining(j2);
             setData(j);
         } catch (error) {
-            setIsError(true)
+            console.log(error);
+            setIsError(true);
         }
         setIsLoading(false);
       };
