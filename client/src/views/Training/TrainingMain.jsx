@@ -11,22 +11,19 @@ export default function TrainingMain(){
   
      useEffect(() => {
       const fetchData = async () => {
-          console.log("estem");
         setIsLoading(true);
         try {
             const r = await fetch('/api/user/reqtraining');
             const j = await r.json();
-            if (j.vatsim.subdivision.code === 'SPA'){
-                isValidTraining(true);
-            }
-            setData(j);
+            isValidTraining(j);            
         } catch (error) {
+            console.log(error);
             setIsError(true)
         }
         setIsLoading(false);
       };
       fetchData();
-    },[!data]);
+    },[isError]);
 
 return(
    <div className={s.main}>

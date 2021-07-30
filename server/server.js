@@ -3,7 +3,6 @@ import dotenv from 'dotenv';
 import passport from 'passport';
 import path, {dirname} from 'path';
 import cors from 'cors';
-import fetch from 'node-fetch';
 import { fileURLToPath } from 'url';
 import {
   router as authRouter,
@@ -16,7 +15,8 @@ import {
   userIsMentor,
 } from './controllers/user/users.js';
 import {
-  isAllowedToRequestTraining
+  isAllowedToRequestTraining,
+  availableTrainings
 } from './controllers/user/training.js';
 
 dotenv.config();
@@ -58,6 +58,10 @@ app.get('/api/user/mentor', requireAuthentication, async (req, res) => {
 
 app.get('/api/user/reqtraining', async (req, res) => {
   return res.json(await isAllowedToRequestTraining(req.cookies.token));
+});
+
+app.get('/api/user/trainings', async (req, res) => {
+  return res.json(await availableTrainings(req.cookies.token));
 });
 
 app.get('/api/test', (req, res) => {
