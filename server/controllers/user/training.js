@@ -12,9 +12,9 @@ export const router = express.Router();
 
 router.use(cookieParser());
 
-export async function isAllowedToRequestTraining(token) {
+export async function isAllowedToRequestTraining(req) {
+  const { token } = req.cookies;
   const data = await userData(token);
-  console.log(data);
   if (data.data.vatsim.subdivision.code === 'SPA') {
     /**
      * await fetch(`https://api.vatsim.net/api/ratings/${data.cid}`, {
@@ -44,7 +44,8 @@ export async function availableTrainings(token) {
   return trainings;
 }
 
-router.post('/api/user/reqtraining',
+router.post('/api/user/trainingrequest',
   requireAuthentication, isAllowedToRequestTraining, async (req) => {
+    console.log("hollaaaa");
     console.log(req.body);
   });
