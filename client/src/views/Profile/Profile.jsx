@@ -1,6 +1,6 @@
 import React, {useEffect, useState} from 'react';
 
-import Load from '../../components/Load/Load';
+import ReactLoading from 'react-loading';
 import s from './Profile.module.scss';
 
 export default function Profile(){
@@ -37,7 +37,7 @@ return(
        </div>
        {isLoading ? (
            <div className={s.main__loading}>
-            <Load/>
+                <ReactLoading type={'bubble'} color={'black'} height={'20%'} width={'20%'} />
            </div>
        ):(
            isError ? (

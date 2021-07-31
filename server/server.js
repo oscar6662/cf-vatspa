@@ -15,6 +15,7 @@ import {
   userIsMentor,
 } from './controllers/user/users.js';
 import {
+  router as trainingRouter,
   isAllowedToRequestTraining,
   availableTrainings
 } from './controllers/user/training.js';
@@ -30,6 +31,7 @@ app.use(cors());
 app.use(express.json());
 app.use(passport.initialize());
 app.use(authRouter);
+app.use(trainingRouter);
 
 app.get('/api/authenticated', async (req, res) => {
   if (await isAuthenticated(req)) {
@@ -61,7 +63,7 @@ app.get('/api/user/reqtraining', async (req, res) => {
 });
 
 app.get('/api/user/trainings', async (req, res) => {
-  return res.json(await availableTrainings(req.cookies.token));
+  return res.json( {trainings: await availableTrainings(req.cookies.token)});
 });
 
 app.get('/api/test', (req, res) => {

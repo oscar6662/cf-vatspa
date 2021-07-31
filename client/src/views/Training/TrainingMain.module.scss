@@ -12,4 +12,65 @@
         background: rgba(128, 128, 128, 0.05);
         height:calc(80vh);
     }
+    &__boxes{
+        display:flex;
+        flex-wrap: wrap;
+    }
+    &__box{
+        height:75px;
+        width:300px;
+        padding:1rem;
+        background-color:white;
+        box-shadow: 5px 5px gray;
+        border-radius: 5px;
+        margin-right: 25px;
+        h2{
+            margin-bottom: 0.5rem;
+        }
+        button{
+            width: 100%;
+            padding: 5px 0;
+            background-color: rgba(4, 4, 180, 0.74);
+            text-align: center;
+            border-radius: 5px;
+            text-decoration: none;
+            color: white;   
+                &:hover{
+                    transition: 0.3s;
+                    background-color: rgb(4, 4, 133);
+                } 
+        }
+    }
+    &__avl_trainings{
+        padding:1rem;
+    }
+    &__date_selection{
+        display:flex;
+        flex-direction: column;
+        background-color: rgb(253, 253, 253);
+        border-radius: 1rem;
+        padding:1rem;
+        height:fit-content;
+        
+        &__button{
+        margin-bottom: 1rem;
+        align-items: flex-end;
+        width: 20%;
+        padding: 5px 0;
+        background-color: rgba(0, 0, 0, 0.74);
+        text-align: center;
+        border-radius: 5px;
+        text-decoration: none;
+        color: white;   
+            &:hover{
+                transition: 0.3s;
+                background-color: rgb(4, 4, 133);
+            }
+        }
+        &__close{
+            width:100%;
+            display:flex;
+            justify-content: flex-end;
+        }
+    }
 }

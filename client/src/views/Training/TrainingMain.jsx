@@ -1,23 +1,27 @@
 import React, {useEffect, useState} from 'react';
 import ReactLoading from 'react-loading';
+import {CSSTransition} from 'react-transition-group';
+import TrainingReqPanel from '../../components/TrainingReqPanel/TrainingReqPanel';
 
 import s from './TrainingMain.module.scss';
+import './transition.scss';
 
 export default function TrainingMain(){
     const [isLoading, setIsLoading] = useState(true);
     const [isError, setIsError] = useState(false);
     const [data, setData] = useState([]);
-    const [validTraining, isValidTraining] = useState(false);
-  
+    const [validTraining, isValidTraining] = useState(true);
+    const [tPanel, toggleTPanel] = useState(false);
+    const [training, setTraining] = useState('');
+
      useEffect(() => {
       const fetchData = async () => {
-        setIsLoading(true);
         try {
-            const r = await fetch('/api/user/reqtraining');
+            const r = await fetch('/api/user/trainings');
             const j = await r.json();
-            isValidTraining(j);            
+            if(j === null) isValidTraining(false);
+            setData(j.trainings);            
         } catch (error) {
-            console.log(error);
             setIsError(true)
         }
         setIsLoading(false);
@@ -25,28 +29,61 @@ export default function TrainingMain(){
       fetchData();
     },[isError]);
 
+    const handleClick = id => () => {
+        setTraining(id);
+        toggleTPanel(!tPanel);
+      }
+    
+    const close = () => () => {
+      toggleTPanel(!tPanel)
+    }
+
 return(
-   <div className={s.main}>
-       <div className={s.main__title}>
-            <h1>Centro de Formación</h1>
-       </div>
+   <div className={s.main}>       
        {isLoading ? (
-           <div className={s.main__loading}>
-            <ReactLoading type={'bubble'} color={'black'} height={'20%'} width={'20%'} />
-           </div>
+           <div className={s.main__title}>
+                <ReactLoading type={'bubble'} color={'black'} height={'20%'} width={'20%'} />
+            </div>
        ):(
-           isError ? (
-               <div>
-                   Unfortunatelly an Error Ocurred
+            isError ? (
+                <div className={s.main__title}>
+                    <h1>
+                        Unfortunatelly an Error Ocurred
+                    </h1>
                 </div>
            ):(
-                <div className="">
-                     <div className={s.main__content}>
-                         <p>hola</p> 
-                     </div>
-                </div>
+                !validTraining ? (
+                    <div className={s.main__title}>
+                        <h1>No hay ningún Training Disponible.</h1>
+                    </div>
+                ):(
+                    <>
+                    <div className={s.main__title}>
+                        <h1>Siguientes trainings disponibles:</h1>
+                    </div>
+                    <div className  = {`${s.main__content} row`}>
+                        <div className = {`col-5 ${s.main__avl_trainings}`}>
+                            {data.map( i => (
+                                <div key = {i} className = {s.main__box}>
+                                    <h2>{i}</h2>
+                                    <button onClick = {handleClick(i)} >Solicitar Training</button>
+                                </div>
+                            ))}
+                        </div>
+                            <CSSTransition in={tPanel} timeout={200} classNames={"my-node"} unmountOnExit>
+
+                            <div className = {`col-5 ${s.main__date_selection}`}>
+                                <div  className = {`${s.main__date_selection__close}`}>
+                                    <button className={s.main__date_selection__button} onClick={close()}>Cerrar</button>
+                                </div>
+                                <TrainingReqPanel training = {training}/>
+                            </div>  
+                        </CSSTransition>                            
+                    </div>     
+                </>
            )
-       )}
+       )
+    )}
    </div> 
 );
 }
