@@ -11,3 +11,11 @@ CREATE TABLE IF NOT EXISTS users (
   refresh varchar(10240) not null,
   date Date not null
 );
+
+DROP TABLE IF EXISTS trainingRequests CASCADE;
+
+CREATE TABLE IF NOT EXISTS trainingRequests (
+  id integer unique not null,
+  training varchar not null,
+  availableDates Date[] not null
+);

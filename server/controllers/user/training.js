@@ -44,8 +44,18 @@ export async function availableTrainings(token) {
   return trainings;
 }
 
-router.post('/api/user/trainingrequest',
-  requireAuthentication, isAllowedToRequestTraining, async (req) => {
-    console.log("hollaaaa");
-    console.log(req.body);
-  });
+router.post('/api/user/trainingrequest', async (req) => {
+  console.log(req);
+  const { token } = req.cookies;
+  console.log(token);
+  const data = await userData(token);
+  console.log(data);
+  const { dates, training } = req.body;
+  try {
+    const q = 'INSERT INTO trainingRequests (id, training, availableDates) VALUES ($1, $2, $3)';
+    const r = await query(q, [data.data.cid, training, dates]);
+    console.log(r);
+  } catch (error) {
+    console.log(error);
+  }
+});

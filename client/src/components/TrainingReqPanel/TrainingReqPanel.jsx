@@ -1,11 +1,12 @@
 import React, { useState, useEffect, useRef, useCallback } from 'react';
 import MultipleDatePicker from "react-multiple-datepicker";
 
-export default function TrainingReqPanel(){
+export default function TrainingReqPanel(training){
     const [dates, setDates] = useState([])
 
     async function Handle(){
-        fetch('/api/user/trainingrequest', {
+        fetch('http://localhost:5000/api/user/trainingrequest ', {
+            credentials: 'include',
             method: 'POST',
             headers: {
               'Accept': 'application/json',
@@ -13,6 +14,7 @@ export default function TrainingReqPanel(){
             },
             body: JSON.stringify({
               dates: dates,
+              training: training,
             })
         })
     }
