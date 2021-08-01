@@ -4,6 +4,7 @@ import dotenv from 'dotenv';
 import jwt from 'jsonwebtoken';
 import fetch from 'node-fetch';
 import cookieParser from 'cookie-parser';
+import cors from 'cors';
 import { query } from '../db/db.js';
 import { userData } from './users.js';
 import { requireAuthentication } from './auth.js';
@@ -11,8 +12,14 @@ import { requireAuthentication } from './auth.js';
 export const router = express.Router();
 
 router.use(cookieParser());
+router.use((req, res, next) => {
+  res.setHeader('Access-Control-Allow-Origin',"http://localhost:3000");
+  res.setHeader('Access-Control-Allow-Headers',"*");
+  res.header('Access-Control-Allow-Credentials', true);
+  next();
+});
 
-export async function isAllowedToRequestTraining(req) {
+export async function isAllowedToRequestTraining(req, res) {
   const { token } = req.cookies;
   const data = await userData(token);
   if (data.data.vatsim.subdivision.code === 'SPA') {
@@ -23,9 +30,9 @@ export async function isAllowedToRequestTraining(req) {
       },
     });
     */
-    return true;
+    return res.json(true);
   }
-  return false;
+  return res.json(false);
 }
 
 export async function availableTrainings(token) {
@@ -44,18 +51,16 @@ export async function availableTrainings(token) {
   return trainings;
 }
 
-router.post('/api/user/trainingrequest', async (req) => {
-  console.log(req);
+router.post('/api/user/trainingrequest', async (req, res) => {
+  console.log(req.body);
   const { token } = req.cookies;
-  console.log(token);
   const data = await userData(token);
-  console.log(data);
   const { dates, training } = req.body;
   try {
-    const q = 'INSERT INTO trainingRequests (id, training, availableDates) VALUES ($1, $2, $3)';
-    const r = await query(q, [data.data.cid, training, dates]);
-    console.log(r);
+    const q = 'INSERT INTO "trainingRequests" (id, training, "availableDates") VALUES ($1, $2, $3)';
+    await query(q, [data.data.cid, training, dates]);
+    res.json({ response: 'training Request added succesfully' });
   } catch (error) {
-    console.log(error);
+    res.json({ response: 'error' });
   }
 });

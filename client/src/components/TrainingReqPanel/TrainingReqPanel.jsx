@@ -1,26 +1,11 @@
 import React, { useState, useEffect, useRef, useCallback } from 'react';
 import MultipleDatePicker from "react-multiple-datepicker";
-
+//TODO FIGURE OUT WHY THE FUCK DATES DOES NOT GET SENT
 export default function TrainingReqPanel(training){
-    const [dates, setDates] = useState([])
+    const [dates, setDates] = useState([]);
 
-    async function Handle(){
-        fetch('http://localhost:5000/api/user/trainingrequest ', {
-            credentials: 'include',
-            method: 'POST',
-            headers: {
-              'Accept': 'application/json',
-              'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({
-              dates: dates,
-              training: training,
-            })
-        })
-    }
-
-    const [isSending, setIsSending] = useState(false)
-    const isMounted = useRef(true)
+    const [isSending, setIsSending] = useState(false);
+    const isMounted = useRef(true);
 
     // set isMounted to false when we unmount the component
     useEffect(() => {
@@ -41,13 +26,26 @@ export default function TrainingReqPanel(training){
         setIsSending(false)
     }, [isSending]) // upzdate the callback if the state changes
 
+    async function Handle(){
+        fetch('/api/user/trainingrequest ', {
+            credentials: 'include',
+            method: 'POST',
+            headers: {
+              'Accept': 'application/json',
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+              dates: dates,
+              training: training,
+            })
+        })
+    }
 
     return(
         <div>
             <p>Selecciona las fechas en que estés disponible</p>
             <MultipleDatePicker
             onSubmit={dates => setDates(dates)}
-            
         />
         <button type="button" onClick={sendRequest} disabled={isSending}>Confirmar</button>
         </div>

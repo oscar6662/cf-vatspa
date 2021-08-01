@@ -58,9 +58,7 @@ app.get('/api/user/mentor', requireAuthentication, async (req, res) => {
   return res.json(await userIsMentor(req.cookies.token));
 });
 
-app.get('/api/user/reqtraining', async (req, res) => {
-  return res.json(await isAllowedToRequestTraining(req.cookies.token));
-});
+app.get('/api/user/reqtraining',isAllowedToRequestTraining);
 
 app.get('/api/user/trainings', async (req, res) => {
   return res.json( {trainings: await availableTrainings(req.cookies.token)});
