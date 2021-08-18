@@ -86,14 +86,15 @@ router.get('/api/auth/callback', async (req, res) => {
   let result = '';
   try {
     result = await fetch(`${process.env.REACT_APP_API_URL}/oauth/token`, {
-      body: JSON.stringify(body),
+      body: new URLSearchParams(body).toString(),
       method: 'post',
-      headers: { 'Content-Type': 'application/json' },
+      headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
     });
   } catch (error) {
     res.status(401).json({ error });
   }
   const r = await result.json();
+  console.log(r);
   let data = '';
   try {
     data = await fetch(`${process.env.REACT_APP_API_URL}/api/user`, {
@@ -106,6 +107,7 @@ router.get('/api/auth/callback', async (req, res) => {
     res.status(401).json({ error });
   }
   const d = await data.json();
+  console.log(d);
   if (d.message === 'Unauthenticated.' || d.data.oauth.token_valid === 'undefined') {
     return res.sendStatus(403);
   }

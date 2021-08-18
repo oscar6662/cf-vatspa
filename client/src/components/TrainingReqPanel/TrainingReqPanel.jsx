@@ -3,29 +3,6 @@ import MultipleDatePicker from "react-multiple-datepicker";
 //TODO FIGURE OUT WHY THE FUCK DATES DOES NOT GET SENT
 export default function TrainingReqPanel(training){
     const [dates, setDates] = useState([]);
-
-    const [isSending, setIsSending] = useState(false);
-    const isMounted = useRef(true);
-
-    // set isMounted to false when we unmount the component
-    useEffect(() => {
-      return () => {
-        isMounted.current = false
-      }
-    }, [])
-
-    const sendRequest = useCallback(async () => {
-      // don't send again while we are sending
-      if (isSending) return;
-      // update state
-      setIsSending(true)
-      // send the actual request
-      await Handle();
-      // once the request is sent, update state again
-      if (isMounted.current) // only update if we are still mounted
-        setIsSending(false)
-    }, [isSending]) // upzdate the callback if the state changes
-
     async function Handle(){
         fetch('/api/user/trainingrequest ', {
             credentials: 'include',
@@ -47,7 +24,7 @@ export default function TrainingReqPanel(training){
             <MultipleDatePicker
             onSubmit={dates => setDates(dates)}
         />
-        <button type="button" onClick={sendRequest} disabled={isSending}>Confirmar</button>
+        <button type="button" onClick={Handle}>Confirmar</button>
         </div>
         
 

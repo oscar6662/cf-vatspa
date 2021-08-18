@@ -38,12 +38,18 @@ export default function VerticalBar(){
         isError ? (
           <p>Error. No se sabe si eres mentor y/o admin</p>
         ) : (
+          <>
+          <>{
           admin && (
-            <p>Editar Usuarios</p>
-          ),
+            <a href="/admin">Editar Usuarios</a>
+          )}
+          </>
+          <>
+          {
           mentor && (
-            <p>Panel de Mentor</p>
-          )
+            <a href="/mentor">Panel de Mentor</a>
+          )}
+          </></>
       ))}
     </div>
   );

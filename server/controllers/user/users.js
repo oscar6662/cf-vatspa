@@ -21,6 +21,16 @@ export async function userData(token) {
   }
 }
 
+export async function specificUserData(id) {
+  const q = 'SELECT * FROM users WHERE id = $1 ';
+  try {
+    const r = await query(q, [id]);
+    return r.rows;
+  } catch (e) {
+    return { error: e };
+  }
+}
+
 export async function userIsAdmin(token) {
   const q = 'SELECT admin FROM users WHERE jwt = $1 ';
   try {
@@ -50,6 +60,16 @@ export async function userExists(id) {
     return false;
   }
   return false;
+}
+
+export async function allUsers() {
+  const q = 'SELECT user_name, id, mentor, admin FROM users';
+  try {
+    const r = await query(q);
+    return r.rows;
+  } catch (error) {
+    return false;
+  }
 }
 
 /**

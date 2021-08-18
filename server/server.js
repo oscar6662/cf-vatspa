@@ -13,7 +13,12 @@ import {
   userData,
   userIsAdmin,
   userIsMentor,
+  allUsers,
+  specificUserData,
 } from './controllers/user/users.js';
+import {
+  router as adminRouter
+} from './controllers/user/admin.js';
 import {
   router as trainingRouter,
   isAllowedToRequestTraining,
@@ -32,6 +37,8 @@ app.use(express.json());
 app.use(passport.initialize());
 app.use(authRouter);
 app.use(trainingRouter);
+app.use(adminRouter);
+
 
 app.get('/api/authenticated', async (req, res) => {
   if (await isAuthenticated(req)) {
@@ -62,6 +69,16 @@ app.get('/api/user/reqtraining',isAllowedToRequestTraining);
 
 app.get('/api/user/trainings', async (req, res) => {
   return res.json( {trainings: await availableTrainings(req.cookies.token)});
+});
+
+app.get('/api/user/:id', requireAuthentication, async (req, res) => {
+  const {id} = req.params;
+  const data = await specificUserData(id);
+  return res.json(data[0]);
+});
+
+app.get('/api/users', async (req, res) => {
+  return res.json( await allUsers() );
 });
 
 app.get('/api/test', (req, res) => {
