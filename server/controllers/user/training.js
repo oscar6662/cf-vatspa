@@ -71,6 +71,21 @@ router.post('/api/user/trainingrequest', async (req, res) => {
   }
 });
 
+router.post('/api/user/traininoffer', async (req, res) => {
+  const { token } = req.cookies;
+  const data = await userData(token);
+  const { dates, training } = req.body;
+  console.log(dates);
+  try {
+    const q = 'INSERT INTO "trainingoffers" (id, training, "availabledate") VALUES ($1, $2, $3)';
+    await query(q, [data.data.cid, training, dates]);
+    res.json({ response: 'training Request added succesfully' });
+  } catch (error) {
+    console.log(error);
+    res.json({ response: 'error' });
+  }
+});
+
 router.get('/api/trainingrequests', async (req, res) => {
   try {
     const q = 'SELECT * FROM "trainingrequests"';

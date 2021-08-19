@@ -37,15 +37,26 @@ const rangeConfig = {
 
 export default function MentorPanelOffer(){
   const onFinish = (fieldsValue) => {
-    const rangeValue = fieldsValue['range-picker'];
-    const rangeTimeValue = fieldsValue['range-time-picker'];
+    const rangeTimeValue = fieldsValue['date'];
     const values = {
       ...fieldsValue,
-      'range-time-picker': [
+      'date': [
         rangeTimeValue[0].format('YYYY-MM-DD HH:mm:ss'),
         rangeTimeValue[1].format('YYYY-MM-DD HH:mm:ss'),
       ],
     };
+    fetch('/api/user/traininoffer ', {
+      credentials: 'include',
+      method: 'POST',
+      headers: {
+        'Accept': 'application/json',
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        dates: values.date,
+        training: values.training,
+      })
+  })
     console.log('Received values of form: ', values);
   };
 
@@ -58,12 +69,12 @@ return(
                  <div className={s.main__content}>
                  <Form name="time_related_controls" {...formItemLayout} onFinish={onFinish}>
 
-                  <Form.Item name="range-time-picker" label="Selecciona la fecha" {...rangeConfig}>
+                  <Form.Item name="date" label="Selecciona la fecha" {...rangeConfig}>
                     <RangePicker showTime format="YYYY-MM-DD HH:mm" />
                   </Form.Item>
                 <Form.Item
                 label="Training"
-                  name={['address', 'province']}
+                  name={'training'}
                   rules={[{ required: true, message: 'Training Required' }]}
                 >
                   <Select placeholder="Selecciona training(s)">

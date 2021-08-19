@@ -23,7 +23,8 @@ CREATE TABLE IF NOT EXISTS trainingrequests (
 DROP TABLE IF EXISTS trainingoffers CASCADE;
 
 CREATE TABLE IF NOT EXISTS trainingoffers (
-  id integer unique not null,
+  id integer not null,
   training varchar not null,
-  availableDate Date[] not null
+  for_user integer,
+  availabledate Date[] not null
 );
