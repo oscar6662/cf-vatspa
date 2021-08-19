@@ -55,11 +55,11 @@ export async function userExists(id) {
   const q = 'SELECT COUNT(1) FROM users WHERE id = $1';
   try {
     const r = await query(q, [id]);
-    if (r.rows[0].count === 1) return true;
+    if (r.rows[0].count === '1') return true;
+    return false;
   } catch (error) {
     return false;
   }
-  return false;
 }
 
 export async function allUsers() {
@@ -97,6 +97,12 @@ export async function createUser(data, r) {
   const q3 = `INSERT INTO user_${data.cid}`
     + '(id, S1, S2, S3, C1) VALUES($1, false, false, false, false)';
 
+  const q4 = `CREATE TABLE IF NOT EXISTS trainings_${data.cid} (`
+  + 'training varchar not null,'
+  + 'pass boolean not null,'
+  + 'mentor varchar not null,'
+  + 'comments varchar);';
+
   try {
     await query(q,
       [data.cid, data.personal.name_full,
@@ -105,10 +111,25 @@ export async function createUser(data, r) {
       ]);
     await query(q2);
     await query(q3, [data.cid]);
+    await query(q4);
   } catch (error) {
     console.log(error);
     return error;
   }
   console.log(token);
+  return token;
+}
+
+export async function makeToken(data, r) {
+  const payload = { email: data.cid };
+  const tokenOptions = { expiresIn: r.expires_in };
+  const token = jwt.sign(payload, process.env.JWT_SECRET, tokenOptions);
+  const q = `UPDATE users SET jwt = $1, access = $2, refresh = $3 WHERE id = ${data.cid}`;
+  try {
+    await query(q, [token, r.access_token, r.refresh_token]);
+  } catch (error) {
+    console.log(error);
+    return false;
+  }
   return token;
 }

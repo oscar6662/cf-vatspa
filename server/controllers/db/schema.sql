@@ -12,10 +12,18 @@ CREATE TABLE IF NOT EXISTS users (
   date Date not null
 );
 
-DROP TABLE IF EXISTS trainingRequests CASCADE;
+DROP TABLE IF EXISTS trainingrequests CASCADE;
 
-CREATE TABLE IF NOT EXISTS trainingRequests (
+CREATE TABLE IF NOT EXISTS trainingrequests (
   id integer unique not null,
   training varchar not null,
   availableDates Date[] not null
+);
+
+DROP TABLE IF EXISTS trainingoffers CASCADE;
+
+CREATE TABLE IF NOT EXISTS trainingoffers (
+  id integer unique not null,
+  training varchar not null,
+  availableDate Date[] not null
 );

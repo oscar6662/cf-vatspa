@@ -1,16 +1,15 @@
 import React, { useState, useEffect  } from 'react';
 
-import Load from '../Load/NavLoad';
+import ReactLoading from 'react-loading';
 import s from './Navbar.module.scss';
 
 export default function Navbar(){
-  const [isLoading, setIsLoading] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
     const [isError, setIsError] = useState(false);
     const [data, setData] = useState('');
   
      useEffect(() => {
       const fetchData = async () => {
-        setIsLoading(true);
         try {
             const r = await fetch('/api/user/name');
             const j = await r.json();
@@ -27,12 +26,12 @@ export default function Navbar(){
     <div className = {s.nav}>
       <div className = {s.nav__text}>
         {isLoading ? (
-          <Load/>
+          <ReactLoading type={'bubbles'} color={'black'}/>
         ):(
           isError ?(
           <p>An error occurred</p>
           ):(
-            <p>{data}</p>
+            <a href='/api/logout'>{data}</a>
           )
         )}
       </div>

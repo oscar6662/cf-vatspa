@@ -17,7 +17,7 @@ const fetchUsers = async () => {
     return r;
 };
 
-export default function AdminPanel(){
+export default function MentorPanel(){
     const { Search } = Input;
     const [searchVal, setSearchVal] = useState(null);
     const { filteredData, loading } = useTableSearch({

@@ -1,5 +1,5 @@
 import React, {useEffect, useState} from 'react';
-
+import { Card, Col, Row } from 'antd';
 import ReactLoading from 'react-loading';
 import s from './Profile.module.scss';
 
@@ -8,6 +8,7 @@ export default function Profile(){
     const [isError, setIsError] = useState(false);
     const [data, setData] = useState([]);
     const [validTraining, isValidTraining] = useState(false);
+    const [trainings, setTrainings] = useState([]);
   
      useEffect(() => {
       const fetchData = async () => {
@@ -17,8 +18,11 @@ export default function Profile(){
             const j = await r.json();
             const r2 = await fetch('/api/user/reqtraining');
             const j2 = await r2.json();
+            const r3 = await fetch('/api/user/completedtrainings');
+            const j3 = await r3.json();
             isValidTraining(j2);
             setData(j);
+            setTrainings(j3)
         } catch (error) {
             console.log(error);
             setIsError(true);
@@ -35,7 +39,7 @@ return(
        </div>
        {isLoading ? (
            <div className={s.main__loading}>
-                <ReactLoading type={'bubble'} color={'black'} height={'20%'} width={'20%'} />
+                <ReactLoading type={'bubbles'} color={'black'}/>
            </div>
        ):(
            isError ? (
@@ -46,18 +50,23 @@ return(
                 <div className="">
                      <div className={s.main__content}>
                           <div className={s.main__stats}>
-                              <div className={s.main__stats__box}>
-                                  <p>Rango actual</p>
-                                  <h2>{data.vatsim.rating.short+' '+data.vatsim.rating.long}</h2>
-                              </div>
-                              <div className={s.main__stats__box}>
-                                  <p>vACC ascrito</p>
-                                  <h2>{data.vatsim.subdivision.name}</h2>
-                              </div>
-                              <div className={s.main__stats__box}>
-                                  <p>Último Training</p>
-                                  <h2>28 de Agosto</h2>
-                              </div>
+                          <Row gutter={16} justify={'space-between'} wrap={true}>
+                            <Col span={8} xs ={24} sm={8} style={{'margin-bottom': '10px'}}>
+                              <Card title="Rango Actual" bordered={false}>
+                                {data.vatsim.rating.short}
+                              </Card>
+                            </Col>
+                            <Col span={8} xs ={24} sm={8} style={{'margin-bottom': '10px'}}>
+                            <Card title="vACC Ascrito" bordered={false}>
+                            {data.vatsim.subdivision.name}
+                            </Card>
+                            </Col>
+                            <Col span={8} xs ={24} sm={8} style={{'margin-bottom': '10px'}}>
+                            <Card title="Último Training" bordered={false}>
+                            28 de Agosto
+                            </Card>
+                            </Col>
+                            </Row>
                           </div>
                           <div className="row">
                              <div className="col-7">
@@ -88,7 +97,8 @@ return(
                                         ):(
                                             <div>
                                                 <a href ="https://vatspa.es/normativa/transferencia-VACC">Transferirte a VATSPA</a>    
-                                                <a href = "/req/training/visitor">Solicitar entrenamiento para ser Visitante</a>    
+                                                <br></br><br></br>
+                                                <a href = "/training">Solicitar entrenamiento para ser Visitante</a>    
                                             </div>
                                         )}
                                     </div>

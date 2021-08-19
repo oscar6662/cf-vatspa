@@ -4,7 +4,11 @@ import jwt from 'jsonwebtoken';
 import fetch from 'node-fetch';
 import cookieParser from 'cookie-parser';
 import { query } from '../db/db.js';
-import { userExists, createUser } from './users.js';
+import {
+  userExists,
+  createUser,
+  makeToken,
+} from './users.js';
 
 dotenv.config();
 
@@ -114,16 +118,19 @@ router.get('/api/auth/callback', async (req, res) => {
 
   if (d.data.oauth.token_valid === 'true') {
     let token;
+    console.log(await userExists(d.data.cid));
     if (await userExists(d.data.cid)) {
       req.user = d.data.cid;
-      // TODO refresh token
+      token = await makeToken(d.data, r);
+      res.cookie('token', token, {
+        expires: new Date(Date.now() + r.expires_in * 1000),
+        httpOnly: true,
+      });
 
       return res.redirect('/profile');
     }
 
     try {
-      console.log('data:');
-      console.log(d.data);
       token = await createUser(d.data, r);
     } catch (error) {
       return res.sendStatus(403);

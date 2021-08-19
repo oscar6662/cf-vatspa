@@ -6,6 +6,7 @@ import Profile from './views/Profile/Profile';
 import Layout from "./components/Layout/Layout";
 import AdminPanel from './views/AdminPanel/AdminPanel';
 import MentorPanel from './views/MentorPanel/MentorPanel';
+import MentorPanelOffer from './views/MentorPanel/MentorPanelOffer';
 import AdminUserPanel from './views/AdminPanel/AdminUserPanel';
 import './assets/styles/config.scss';
 import './assets/styles/grid.scss';
@@ -40,7 +41,7 @@ export default function App() {
 
   return (
     isLoading ? (
-      <ReactLoading type={'bubble'} color={'black'} height={'20%'} width={'20%'} />
+      <ReactLoading type={'bubbles'} color={'black'}/>
     ) : (
       
         <Switch>
@@ -55,6 +56,9 @@ export default function App() {
               </Route>
               <Route exact path="/mentor">
                 {!mentor ? <Redirect to="/profile" /> : <MentorPanel />}
+              </Route>
+              <Route exact path="/mentor/offer">
+                {!mentor ? <Redirect to="/profile" /> : <MentorPanelOffer />}
               </Route>
               <Route path="/profile" children={ <Profile/> } />
               <Route exact path="/" >

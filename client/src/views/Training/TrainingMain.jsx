@@ -17,7 +17,7 @@ export default function TrainingMain(){
      useEffect(() => {
       const fetchData = async () => {
         try {
-            const r = await fetch('/api/user/trainings');
+            const r = await fetch('/api/user/availtrainings');
             const j = await r.json();
             if(j === null) isValidTraining(false);
             setData(j.trainings);            
@@ -42,7 +42,7 @@ return(
    <div className={s.main}>       
        {isLoading ? (
            <div className={s.main__title}>
-                <ReactLoading type={'bubble'} color={'black'} height={'20%'} width={'20%'} />
+                <ReactLoading type={'bubbles'} color={'black'}/>
             </div>
        ):(
             isError ? (

@@ -51,12 +51,19 @@ export async function availableTrainings(token) {
   return trainings;
 }
 
+export async function completedTrainings(token) {
+  const data = await userData(token);
+  const q = `SELECT * FROM trainings_${data.data.cid}`;
+  const data2 = await query(q);
+  return data2.rows[0];
+}
+
 router.post('/api/user/trainingrequest', async (req, res) => {
   const { token } = req.cookies;
   const data = await userData(token);
   const { dates, training } = req.body;
   try {
-    const q = 'INSERT INTO "trainingRequests" (id, training, "availableDates") VALUES ($1, $2, $3)';
+    const q = 'INSERT INTO "trainingrequests" (id, training, "availableDates") VALUES ($1, $2, $3)';
     await query(q, [data.data.cid, training.training, dates]);
     res.json({ response: 'training Request added succesfully' });
   } catch (error) {
@@ -66,7 +73,7 @@ router.post('/api/user/trainingrequest', async (req, res) => {
 
 router.get('/api/trainingrequests', async (req, res) => {
   try {
-    const q = 'SELECT * FROM "trainingRequests"';
+    const q = 'SELECT * FROM "trainingrequests"';
     const r = await query(q);
     res.json(r.rows);
   } catch (error) {
