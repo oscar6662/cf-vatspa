@@ -63,7 +63,7 @@ router.post('/api/user/trainingrequest', async (req, res) => {
   const data = await userData(token);
   const { dates, training } = req.body;
   try {
-    const q = 'INSERT INTO "trainingrequests" (id, training, "availableDates") VALUES ($1, $2, $3)';
+    const q = 'INSERT INTO "trainingrequests" (id, training, availabledates) VALUES ($1, $2, $3)';
     await query(q, [data.data.cid, training.training, dates]);
     res.json({ response: 'training Request added succesfully' });
   } catch (error) {
@@ -93,5 +93,25 @@ router.get('/api/trainingrequests', async (req, res) => {
     res.json(r.rows);
   } catch (error) {
     res.json({ response: 'error' });
+  }
+});
+
+router.get('/api/availtrainingoffers', async (req, res) => {
+  const { token } = req.cookies;
+  const data = await userData(token);
+  try {
+    const q1 = 'SELECT * FROM trainingrequests WHERE id = $1';
+    const r1 = await query(q1, [data.data.cid]);
+    if (r1.rows[0] !== undefined) {
+      // eslint-disable-next-line max-len
+      const q2 = 'SELECT * FROM trainingoffers WHERE (training = $1 AND ("for_user" = $2 OR "for_user" IS NULL))';
+      const r2 = await query(q2, [r1.rows[0].training, data.data.cid]);
+      console.log(r2.rows);
+      return res.json(r2.rows);
+    }
+    return res.json(null);
+  } catch (error) {
+    console.log(error);
+    return res.json({ response: 'error' });
   }
 });

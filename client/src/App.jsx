@@ -11,6 +11,7 @@ import AdminUserPanel from './views/AdminPanel/AdminUserPanel';
 import './assets/styles/config.scss';
 import './assets/styles/grid.scss';
 import TrainingMain from './views/Training/TrainingMain';
+import TrainingOffers from './views/Training/TrainingOffers';
 
 
 
@@ -47,7 +48,8 @@ export default function App() {
         <Switch>
         {loggedIn ? (
             <Layout>
-              <Route path="/training" children={ <TrainingMain/> } />
+              <Route exact path="/training" children={ <TrainingMain/> } />
+              <Route exact path="/training/offers" children={ <TrainingOffers/> } />
               <Route exact path="/admin">
                 {!admin ? <Redirect to="/profile" /> : <AdminPanel />}
               </Route>

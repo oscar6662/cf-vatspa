@@ -26,5 +26,5 @@ CREATE TABLE IF NOT EXISTS trainingoffers (
   id integer not null,
   training varchar not null,
   for_user integer,
-  availabledate Date[] not null
+  availabledate timestamp[] not null
 );
