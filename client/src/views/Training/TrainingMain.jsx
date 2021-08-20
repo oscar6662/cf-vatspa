@@ -2,9 +2,12 @@ import React, {useEffect, useState} from 'react';
 import ReactLoading from 'react-loading';
 import {CSSTransition} from 'react-transition-group';
 import TrainingReqPanel from '../../components/TrainingReqPanel/TrainingReqPanel';
+import { Divider, Card } from 'antd';
 
 import s from './TrainingMain.module.scss';
 import './transition.scss';
+
+const { Meta } = Card;
 
 export default function TrainingMain(){
     const [isLoading, setIsLoading] = useState(true);
@@ -13,14 +16,20 @@ export default function TrainingMain(){
     const [validTraining, isValidTraining] = useState(true);
     const [tPanel, toggleTPanel] = useState(false);
     const [training, setTraining] = useState('');
+    const [isTraining, setIsTraining] = useState(false);
 
      useEffect(() => {
       const fetchData = async () => {
         try {
             const r = await fetch('/api/user/availtrainings');
             const j = await r.json();
-            if(j === null) isValidTraining(false);
-            setData(j.trainings);            
+            if(j.trainings === null) isValidTraining(false);
+            if(j.trainings === 'enrolled'){
+              setIsTraining(true);
+              //TODO FETCH BOOKED TRAINING
+            } else{
+              setData(j.trainings);            
+            }
         } catch (error) {
             setIsError(true)
         }
@@ -39,51 +48,49 @@ export default function TrainingMain(){
     }
 
 return(
-   <div className={s.main}>       
+  <div className  = {`${s.main__content} row`}>    
        {isLoading ? (
-           <div className={s.main__title}>
-                <ReactLoading type={'bubbles'} color={'black'}/>
-            </div>
+          <ReactLoading type={'bubbles'} color={'black'}/>
        ):(
-            isError ? (
-                <div className={s.main__title}>
-                    <h1>
-                        Unfortunatelly an Error Ocurred
-                    </h1>
-                </div>
+          isError ? (
+            <h1>
+              Unfortunatelly an Error Ocurred
+            </h1>
            ):(
-                !validTraining ? (
-                    <div className={s.main__title}>
-                        <h1>No hay ningún Training Disponible.</h1>
+              !validTraining ? (
+                <h1>No hay ningún Training Disponible.</h1>
+              ):(
+                isTraining ? (
+                    <Card></Card>
+                ) : (
+                  <>
+                    <div className = {`col-5 ${s.main__avl_trainings}`}>
+                        {data.map( i => (
+                            <div key = {i} className = {s.main__box}>                                    
+                                <Card style={{ width: 300, marginTop: 16 }} loading={isLoading}>
+                                  <Meta
+                                    title={i}
+                                  />
+                                  <Divider />
+                                  <button onClick = {handleClick(i)} >Solicitar Training</button>
+                                </Card>
+                                <Divider />
+                            </div>
+                        ))}
                     </div>
-                ):(
-                    <>
-                    <div className={s.main__title}>
-                        <h1>Siguientes trainings disponibles:</h1>
-                    </div>
-                    <div className  = {`${s.main__content} row`}>
-                        <div className = {`col-5 ${s.main__avl_trainings}`}>
-                            {data.map( i => (
-                                <div key = {i} className = {s.main__box}>
-                                    <h2>{i}</h2>
-                                    <button onClick = {handleClick(i)} >Solicitar Training</button>
-                                </div>
-                            ))}
+                    <CSSTransition in={tPanel} timeout={200} classNames={"my-node"} unmountOnExit>
+                      <div className = {`col-5 ${s.main__date_selection}`}>
+                        <div  className = {`${s.main__date_selection__close}`}>
+                          <button className={s.main__date_selection__button} onClick={close()}>Cerrar</button>
                         </div>
-                            <CSSTransition in={tPanel} timeout={200} classNames={"my-node"} unmountOnExit>
-
-                            <div className = {`col-5 ${s.main__date_selection}`}>
-                                <div  className = {`${s.main__date_selection__close}`}>
-                                    <button className={s.main__date_selection__button} onClick={close()}>Cerrar</button>
-                                </div>
-                                <TrainingReqPanel training = {training}/>
-                            </div>  
-                        </CSSTransition>                            
-                    </div>     
-                </>
+                        <TrainingReqPanel training = {training}/>
+                      </div>  
+                    </CSSTransition>                            
+                  </>
+                )
            )
-       )
-    )}
+        )
+      )}
    </div> 
 );
 }

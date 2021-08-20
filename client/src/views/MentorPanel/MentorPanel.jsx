@@ -26,33 +26,26 @@ export default function MentorPanel(){
     });
 
 return(
-   <div className={s.main}>
-       <div className={s.main__title}>
-            <h1>Centro de Formación</h1>
-       </div>
-            <div className="">
-                 <div className={s.main__content}>
-                    <Button
-                        href = '/mentor/offer'
-                        type = 'primary'
-                        >Hacer oferta</Button>
-                    <br></br><br></br>
-                    <Search
-                        onChange={e => setSearchVal(e.target.value)}
-                        placeholder="Search"
-                        enterButton
-                        style={{position: 'sticky', top: '0', left: '0'}}
-                    />
-                    <br /> <br />
-                    <Table
-                      dataSource={filteredData}
-                      columns={userColumns}
-                      loading={loading}
-                      pagination={false}
-                      rowKey='user_name'
-                    />
-                 </div>
-            </div>
-   </div> 
+  <>
+    <Button
+        href = '/mentor/offer'
+        type = 'primary'
+        >Hacer oferta</Button>
+    <br></br><br></br>
+    <Search
+        onChange={e => setSearchVal(e.target.value)}
+        placeholder="Search"
+        enterButton
+        style={{position: 'sticky', top: '0', left: '0'}}
+    />
+    <br /> <br />
+    <Table
+      dataSource={filteredData}
+      columns={userColumns}
+      loading={loading}
+      pagination={false}
+      rowKey='user_name'
+    />
+  </>
 );
 }

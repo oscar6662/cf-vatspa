@@ -33,83 +33,73 @@ export default function Profile(){
     },[!data]);
 
 return(
-   <div className={s.main}>
-       <div className={s.main__title}>
-            <h1>Centro de Formación</h1>
-       </div>
-       {isLoading ? (
-           <div className={s.main__loading}>
-                <ReactLoading type={'bubbles'} color={'black'}/>
-           </div>
-       ):(
-           isError ? (
-               <div>
-                   Unfortunatelly an Error Ocurred
+  <>
+    {isLoading ? (
+      <ReactLoading type={'bubbles'} color={'black'}/>
+    ):(
+      isError ? (
+        <p>Unfortunatelly an Error Ocurred</p>
+      ):(
+        <div>
+          <div className={s.main__stats}>
+            <Row gutter={16} justify={'space-between'} wrap={true}>
+              <Col span={8} xs ={24} sm={8} style={{'margin-bottom': '10px'}}>
+                <Card title="Rango Actual" bordered={false}>
+                  {data.vatsim.rating.short}
+                </Card>
+              </Col>
+              <Col span={8} xs ={24} sm={8} style={{'margin-bottom': '10px'}}>
+                <Card title="vACC Ascrito" bordered={false}>
+                  {data.vatsim.subdivision.name}
+                </Card>
+              </Col>
+              <Col span={8} xs ={24} sm={8} style={{'margin-bottom': '10px'}}>
+                <Card title="Último Training" bordered={false}>
+                  28 de Agosto
+                </Card>
+              </Col>
+            </Row>
+          </div>
+          <div className="row">
+            <div className="col-7">
+              <div className = {s.main__trainings}>
+                <h2>Mis Trainings</h2>
+                  <table>
+                    <tr>
+                      <th>Training</th>
+                      <th>Fecha</th>
+                      <th>Resultado</th>
+                      <th>Comentarios</th>
+                    </tr>
+                    <tr>
+                        <td>Introducción S1</td>
+                        <td>28 de Agosto</td>
+                        <td>Aprovado</td>
+                        <td></td>
+                    </tr>
+                  </table>
                 </div>
-           ):(
-                <div className="">
-                     <div className={s.main__content}>
-                          <div className={s.main__stats}>
-                          <Row gutter={16} justify={'space-between'} wrap={true}>
-                            <Col span={8} xs ={24} sm={8} style={{'margin-bottom': '10px'}}>
-                              <Card title="Rango Actual" bordered={false}>
-                                {data.vatsim.rating.short}
-                              </Card>
-                            </Col>
-                            <Col span={8} xs ={24} sm={8} style={{'margin-bottom': '10px'}}>
-                            <Card title="vACC Ascrito" bordered={false}>
-                            {data.vatsim.subdivision.name}
-                            </Card>
-                            </Col>
-                            <Col span={8} xs ={24} sm={8} style={{'margin-bottom': '10px'}}>
-                            <Card title="Último Training" bordered={false}>
-                            28 de Agosto
-                            </Card>
-                            </Col>
-                            </Row>
-                          </div>
-                          <div className="row">
-                             <div className="col-7">
-                                <div className = {s.main__trainings}>
-                                    <h2>Mis Trainings</h2>
-                                    <table>
-                                        <tr>
-                                            <th>Training</th>
-                                            <th>Fecha</th>
-                                            <th>Resultado</th>
-                                            <th>Comentarios</th>
-                                        </tr>
-                                        <tr>
-                                            <td>Introducción S1</td>
-                                            <td>28 de Agosto</td>
-                                            <td>Aprovado</td>
-                                            <td></td>
-                                        </tr>
-                                    </table>
-                                </div>
-                             </div>
-                             <div className="col-5">
-                                 <div className = {s.main__req}>
-                                     <h2>Solicitar Training</h2>
-                                     <div  href ="#" className={s.main__req__box}>
-                                        {validTraining ? (
-                                            <a href = "/req/training">Empieza tu formación</a>
-                                        ):(
-                                            <div>
-                                                <a href ="https://vatspa.es/normativa/transferencia-VACC">Transferirte a VATSPA</a>    
-                                                <br></br><br></br>
-                                                <a href = "/training">Solicitar entrenamiento para ser Visitante</a>    
-                                            </div>
-                                        )}
-                                    </div>
-                                 </div>
-
-                             </div>
-                          </div>
-                     </div>
+              </div>
+            <div className="col-5">
+              <div className = {s.main__req}>
+                <h2>Solicitar Training</h2>
+                <div  href ="#" className={s.main__req__box}>
+                  {validTraining ? (
+                    <a href = "/req/training">Empieza tu formación</a>
+                  ):(
+                    <div>
+                      <a href ="https://vatspa.es/normativa/transferencia-VACC">Transferirte a VATSPA</a>    
+                        <br></br><br></br>
+                      <a href = "/training">Solicitar entrenamiento para ser Visitante</a>    
+                    </div>
+                  )}
                 </div>
-           )
-       )}
-   </div> 
+              </div>
+            </div>
+         </div>
+        </div>
+      )
+    )}
+  </> 
 );
 }

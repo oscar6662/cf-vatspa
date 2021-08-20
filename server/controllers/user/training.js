@@ -38,6 +38,9 @@ export async function isAllowedToRequestTraining(req, res) {
 export async function availableTrainings(token) {
   let trainings = [];
   const data = await userData(token);
+  const q1 = 'SELECT * FROM trainingrequests WHERE id = $1';
+  const data3 = await query(q1, [data.data.cid]);
+  if (data3.rows[0] !== null) return 'enrolled';
   const q = `SELECT * FROM user_${data.data.cid}`;
   const data2 = await query(q);
   const r = data2.rows[0];
@@ -58,20 +61,43 @@ export async function completedTrainings(token) {
   return data2.rows[0];
 }
 
-router.post('/api/user/trainingrequest', async (req, res) => {
+router.post('/api/user/trainingrequest', requireAuthentication, async (req, res) => {
   const { token } = req.cookies;
   const data = await userData(token);
   const { dates, training } = req.body;
+  console.log(dates);
   try {
     const q = 'INSERT INTO "trainingrequests" (id, training, availabledates) VALUES ($1, $2, $3)';
     await query(q, [data.data.cid, training.training, dates]);
     res.json({ response: 'training Request added succesfully' });
   } catch (error) {
+    console.log(error);
     res.json({ response: 'error' });
   }
 });
 
-router.post('/api/user/traininoffer', async (req, res) => {
+router.post('/api/trainingaccepted', requireAuthentication, async (req, res) => {
+  const { token } = req.cookies;
+  const data = await userData(token);
+  const { dates, training, mentor } = req.body;
+  console.log(training);
+  try {
+    // eslint-disable-next-line max-len
+    const q = 'INSERT INTO trainings (id_student, id_mentor, training, availabledate) VALUES ($1, $2, $3, $4)';
+    await query(q, [data.data.cid, mentor, training, dates]);
+    const q1 = 'DELETE FROM trainingrequests WHERE id = $1';
+    await query(q1, [data.data.cid]);
+    // eslint-disable-next-line max-len
+    const q2 = 'DELETE FROM trainingoffers WHERE (id = $1 AND training = $2 AND availabledate = $3)';
+    await query(q2, [mentor, training, dates]);
+    res.json({ response: 'training Request added succesfully' });
+  } catch (error) {
+    console.log(error);
+    res.json({ response: 'error' });
+  }
+});
+
+router.post('/api/user/traininoffer', requireAuthentication, async (req, res) => {
   const { token } = req.cookies;
   const data = await userData(token);
   const { dates, training } = req.body;
@@ -86,7 +112,7 @@ router.post('/api/user/traininoffer', async (req, res) => {
   }
 });
 
-router.get('/api/trainingrequests', async (req, res) => {
+router.get('/api/trainingrequests', requireAuthentication, async (req, res) => {
   try {
     const q = 'SELECT * FROM "trainingrequests"';
     const r = await query(q);
@@ -96,7 +122,7 @@ router.get('/api/trainingrequests', async (req, res) => {
   }
 });
 
-router.get('/api/availtrainingoffers', async (req, res) => {
+router.get('/api/availtrainingoffers', requireAuthentication, async (req, res) => {
   const { token } = req.cookies;
   const data = await userData(token);
   try {

@@ -3,7 +3,7 @@ import React, {useState, useEffect} from 'react';
 import ReactLoading from 'react-loading';
 import Index from "./views/Index/Index";
 import Profile from './views/Profile/Profile';
-import Layout from "./components/Layout/Layout";
+import Schema from "./components/Layout/Schema";
 import AdminPanel from './views/AdminPanel/AdminPanel';
 import MentorPanel from './views/MentorPanel/MentorPanel';
 import MentorPanelOffer from './views/MentorPanel/MentorPanelOffer';
@@ -47,7 +47,7 @@ export default function App() {
       
         <Switch>
         {loggedIn ? (
-            <Layout>
+            <Schema>
               <Route exact path="/training" children={ <TrainingMain/> } />
               <Route exact path="/training/offers" children={ <TrainingOffers/> } />
               <Route exact path="/admin">
@@ -66,7 +66,7 @@ export default function App() {
               <Route exact path="/" >
                 <Redirect to="/profile" />
              </Route>
-            </Layout>
+            </Schema>
           ) : (
             <Route exact path="/" >
                 <Index/>

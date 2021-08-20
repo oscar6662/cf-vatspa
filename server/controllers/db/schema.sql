@@ -28,3 +28,12 @@ CREATE TABLE IF NOT EXISTS trainingoffers (
   for_user integer,
   availabledate timestamp[] not null
 );
+
+DROP TABLE IF EXISTS trainings CASCADE;
+
+CREATE TABLE IF NOT EXISTS trainings (
+  id_student integer unique not null,
+  id_mentor integer not null,
+  training varchar not null,
+  availabledate timestamp[] not null
+);
