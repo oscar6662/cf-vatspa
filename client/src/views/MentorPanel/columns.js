@@ -16,7 +16,7 @@ export const userColumns = [
       },
     {
         title: "Fechas",
-        dataIndex: "availableDates",
+        dataIndex: "availabledates",
         key: "fechas",
     },
   ];
