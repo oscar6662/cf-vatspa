@@ -1,5 +1,5 @@
 import React, {useEffect, useState} from 'react';
-import { Card, Col, Row } from 'antd';
+import { Card, Col, Divider, Row } from 'antd';
 import ReactLoading from 'react-loading';
 import s from './Profile.module.scss';
 
@@ -89,8 +89,8 @@ return(
                   ):(
                     <div>
                       <a href ="https://vatspa.es/normativa/transferencia-VACC">Transferirte a VATSPA</a>    
-                        <br></br><br></br>
-                      <a href = "/training">Solicitar entrenamiento para ser Visitante</a>    
+                        <Divider></Divider>
+                        {data.vatsim.rating.id > 2 && <a href = "/training">Solicitar entrenamiento para ser Visitante</a> }  
                     </div>
                   )}
                 </div>
