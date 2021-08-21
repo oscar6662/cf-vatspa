@@ -41,6 +41,9 @@ export async function availableTrainings(token) {
   const q1 = 'SELECT * FROM trainingrequests WHERE id = $1';
   const data3 = await query(q1, [data.data.cid]);
   if (data3.rows[0] !== undefined) return 'enrolled';
+  const q2 = 'SELECT * FROM trainings WHERE id_student = $1';
+  const data4 = await query(q2, [data.data.cid]);
+  if (data4.rows[0] !== undefined) return 'enrolled';
   const q = `SELECT * FROM user_${data.data.cid}`;
   const data2 = await query(q);
   const r = data2.rows[0];
