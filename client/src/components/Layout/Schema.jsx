@@ -76,9 +76,14 @@ export default function Schema({ children }) {
             <img src = { logo } alt = ""></img>
           </div>
           <Menu theme="dark" mode="inline" defaultSelectedKeys={[path.pathname]}>
-            <Menu.Item key="/profile" icon={<UserOutlined />}>
-              <a href="/">Perfil</a>
-            </Menu.Item>
+            <SubMenu key="/profile" icon={<UserOutlined />} title="Perfil">
+              <Menu.Item key="/profile">
+                <a href="/">Perfil</a>
+              </Menu.Item>
+              <Menu.Item key="/user/aprovedstations">
+                <a href="/user/aprovedstations">Posiciones</a>
+              </Menu.Item>
+            </SubMenu>
             <SubMenu key="/training" icon={<BankOutlined />} title="Training">
               <Menu.Item key="/training"><a href="/training">Training</a></Menu.Item>
               <Menu.Item key="/training/offers"><a href="/training/offers">Ofertas</a></Menu.Item>

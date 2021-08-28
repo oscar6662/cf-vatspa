@@ -89,18 +89,23 @@ export async function createUser(data, r) {
 
   const q2 = `CREATE TABLE IF NOT EXISTS user_${data.cid} (`
     + 'id integer unique not null,'
+    + 'Madrid boolean not null,'
+    + 'Palma boolean not null,'
+    + 'Barcelona boolean not null,'
     + 'S1 boolean not null,'
     + 'S2 boolean not null,'
     + 'S3 boolean not null,'
     + 'C1 boolean not null);';
 
   const q3 = `INSERT INTO user_${data.cid}`
-    + '(id, S1, S2, S3, C1) VALUES($1, false, false, false, false)';
+    // eslint-disable-next-line max-len
+    + '(id, Madrid, Palma, Barcelona, S1, S2, S3, C1) VALUES($1, false, false, false, $2, $3, $4, $5)';
 
   const q4 = `CREATE TABLE IF NOT EXISTS trainings_${data.cid} (`
   + 'training varchar not null,'
   + 'pass boolean not null,'
   + 'mentor varchar not null,'
+  + 'date date not null,'
   + 'comments varchar);';
 
   try {
@@ -110,7 +115,11 @@ export async function createUser(data, r) {
         token, r.access_token, r.refresh_token, expiry,
       ]);
     await query(q2);
-    await query(q3, [data.cid]);
+    await query(q3, [data.cid,
+      data.vatsim.rating.id > 1,
+      data.vatsim.rating.id > 2,
+      data.vatsim.rating.id > 3,
+      data.vatsim.rating.id > 4]);
     await query(q4);
   } catch (error) {
     console.log(error);
@@ -124,9 +133,11 @@ export async function makeToken(data, r) {
   const payload = { email: data.cid };
   const tokenOptions = { expiresIn: r.expires_in };
   const token = jwt.sign(payload, process.env.JWT_SECRET, tokenOptions);
-  const q = `UPDATE users SET jwt = $1, access = $2, refresh = $3 WHERE id = ${data.cid}`;
+  const expiry = new Date(Date.now() + r.expires_in * 1000);
+  // eslint-disable-next-line max-len
+  const q = `UPDATE users SET jwt = $1, access = $2, refresh = $3, date = $4 WHERE id = ${data.cid}`;
   try {
-    await query(q, [token, r.access_token, r.refresh_token]);
+    await query(q, [token, r.access_token, r.refresh_token, expiry]);
   } catch (error) {
     console.log(error);
     return false;

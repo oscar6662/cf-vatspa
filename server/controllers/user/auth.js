@@ -43,7 +43,6 @@ export async function requireAuthentication(req, res, next) {
 export async function isAuthenticated(req) {
   const { token } = req.cookies;
   console.log('token:');
-  console.log(token);
   if (token == null) return false;
   const verify = jwt.verify(token, process.env.JWT_SECRET, (err, user) => {
     if (err) return false;
@@ -53,13 +52,12 @@ export async function isAuthenticated(req) {
 
   if (verify === false) return false;
 
-  const q = 'SELECT id FROM users WHERE jwt = ($1)';
+  const q = 'SELECT * FROM users WHERE jwt = ($1)';
   try {
     const r = await query(q, [token]);
     if (r.rows.length < 0) return false;
-    if (r.rows[0].date < new Date(Date.now())) {
-      return false;
-    }
+    if (r.rows[0].date < new Date(Date.now())) return false;
+    if (r.rows[0].jwt === token) return true;
     return true;
   } catch (e) {
     return false;
@@ -126,7 +124,6 @@ router.get('/api/auth/callback', async (req, res) => {
         expires: new Date(Date.now() + r.expires_in * 1000),
         httpOnly: true,
       });
-
       return res.redirect('/profile');
     }
 

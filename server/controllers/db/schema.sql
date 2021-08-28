@@ -5,6 +5,7 @@ CREATE TABLE IF NOT EXISTS users (
   user_name varchar(128),
   user_email varchar(128) not null,
   mentor boolean not null,
+  mentor_to int(1)
   admin boolean not null,
   jwt varchar(10240) not null,
   access varchar(10240) not null,

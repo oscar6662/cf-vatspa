@@ -9,20 +9,20 @@ export default function Profile(){
     const [data, setData] = useState([]);
     const [validTraining, isValidTraining] = useState(false);
     const [trainings, setTrainings] = useState([]);
-  
+
      useEffect(() => {
       const fetchData = async () => {
-        setIsLoading(true);
         try {
-            const r = await fetch('/api/user');
-            const j = await r.json();
+            const r1 = await fetch('/api/user');
+            const j1 = await r1.json();
             const r2 = await fetch('/api/user/reqtraining');
             const j2 = await r2.json();
             const r3 = await fetch('/api/user/completedtrainings');
             const j3 = await r3.json();
+            setData(j1);
             isValidTraining(j2);
-            setData(j);
-            setTrainings(j3)
+            console.log(j3.length);
+            setTrainings(j3);
         } catch (error) {
             console.log(error);
             setIsError(true);
@@ -55,7 +55,7 @@ return(
               </Col>
               <Col span={8} xs ={24} sm={8} style={{'margin-bottom': '10px'}}>
                 <Card title="Último Training" bordered={false}>
-                  28 de Agosto
+                  {!trainings.length ? <>Ninguno</> : trainings[trainings.length-1].date}
                 </Card>
               </Col>
             </Row>
@@ -64,6 +64,8 @@ return(
             <div className="col-7">
               <div className = {s.main__trainings}>
                 <h2>Mis Trainings</h2>
+                {!trainings.length? <>No has hecho ningún training </>:
+                (
                   <table>
                     <tr>
                       <th>Training</th>
@@ -71,13 +73,16 @@ return(
                       <th>Resultado</th>
                       <th>Comentarios</th>
                     </tr>
+                  {trainings.map(i => (
                     <tr>
-                        <td>Introducción S1</td>
-                        <td>28 de Agosto</td>
-                        <td>Aprovado</td>
-                        <td></td>
-                    </tr>
+                      <td>{i.training}</td>
+                      <td>{i.date}</td>
+                      <td>{i.passed}</td>
+                      <td></td>
+                    </tr> 
+                  ))}
                   </table>
+                ) } 
                 </div>
               </div>
             <div className="col-5">
@@ -85,7 +90,7 @@ return(
                 <h2>Solicitar Training</h2>
                 <div  href ="#" className={s.main__req__box}>
                   {validTraining ? (
-                    <a href = "/req/training">Empieza tu formación</a>
+                    data.vatsim.rating.id < 5 &&<a href = "/req/training">Empieza tu formación</a>
                   ):(
                     <div>
                       <a href ="https://vatspa.es/normativa/transferencia-VACC">Transferirte a VATSPA</a>    

@@ -1,3 +1,4 @@
+/* eslint-disable no-restricted-syntax */
 // import fetch from 'node-fetch';
 import express from 'express';
 import dotenv from 'dotenv';
@@ -22,7 +23,8 @@ router.use((req, res, next) => {
 export async function isAllowedToRequestTraining(req, res) {
   const { token } = req.cookies;
   const data = await userData(token);
-  if (data.data.vatsim.subdivision.code === 'SPA') {
+  console.log(data.data);
+  if (data.data.vatsim.subdivision.id === 'SPN') {
     /**
      * await fetch(`https://api.vatsim.net/api/ratings/${data.cid}`, {
       headers: {
@@ -40,20 +42,20 @@ export async function availableTrainings(token) {
   const data = await userData(token);
   const q1 = 'SELECT * FROM trainingrequests WHERE id = $1';
   const data3 = await query(q1, [data.data.cid]);
-  if (data3.rows[0] !== undefined) return 'enrolled';
+  if (data3.rows[0] !== undefined) return 'requested';
   const q2 = 'SELECT * FROM trainings WHERE id_student = $1';
   const data4 = await query(q2, [data.data.cid]);
   if (data4.rows[0] !== undefined) return 'enrolled';
   const q = `SELECT * FROM user_${data.data.cid}`;
   const data2 = await query(q);
   const r = data2.rows[0];
-  console.log(r.s2);
   for (const key in r) {
     if (r[key] === false) {
-      trainings = [ ...trainings, key ];
-      break;
+      trainings = [...trainings, key];
+      if (key.charAt(0) === 's') break;
     }
   }
+  console.log(trainings);
   return trainings;
 }
 
@@ -68,10 +70,10 @@ router.post('/api/user/trainingrequest', requireAuthentication, async (req, res)
   const { token } = req.cookies;
   const data = await userData(token);
   const { dates, training } = req.body;
-  console.log(dates);
+  console.log(training);
   try {
     const q = 'INSERT INTO "trainingrequests" (id, training, availabledates) VALUES ($1, $2, $3)';
-    await query(q, [data.data.cid, training.training, dates]);
+    await query(q, [data.data.cid, training, dates]);
     res.json({ response: 'training Request added succesfully' });
   } catch (error) {
     console.log(error);
@@ -125,20 +127,47 @@ router.get('/api/trainingrequests', requireAuthentication, async (req, res) => {
   }
 });
 
+router.get('/api/user/training/requested', requireAuthentication, async (req, res) => {
+  const { token } = req.cookies;
+  const data = await userData(token);
+  try {
+    const q = 'SELECT * FROM trainingrequests WHERE id = $1';
+    const r = await query(q, [data.data.cid]);
+    res.json(r.rows[0]);
+  } catch (error) {
+    res.json({ response: 'error' });
+  }
+});
+
+router.get('/api/user/training/confirmed', requireAuthentication, async (req, res) => {
+  const { token } = req.cookies;
+  const data = await userData(token);
+  try {
+    const q = 'SELECT * FROM trainings WHERE id_student = $1';
+    const r = await query(q, [data.data.cid]);
+    res.json(r.rows);
+  } catch (error) {
+    res.json({ response: 'error' });
+  }
+});
+
 router.get('/api/availtrainingoffers', requireAuthentication, async (req, res) => {
   const { token } = req.cookies;
   const data = await userData(token);
   try {
-    const q1 = 'SELECT * FROM trainingrequests WHERE id = $1';
+    const q1 = 'SELECT * FROM trainings WHERE id_student  = $1';
     const r1 = await query(q1, [data.data.cid]);
-    if (r1.rows[0] !== undefined) {
+    if (r1.rows[0] !== undefined) return res.json({ response: 'enrolled'});
+    const q2 = 'SELECT * FROM trainingrequests WHERE id = $1';
+    const r2 = await query(q2, [data.data.cid]);
+    if (r2.rows[0] !== undefined) {
       // eslint-disable-next-line max-len
-      const q2 = 'SELECT * FROM trainingoffers WHERE (training = $1 AND ("for_user" = $2 OR "for_user" IS NULL))';
-      const r2 = await query(q2, [r1.rows[0].training, data.data.cid]);
-      console.log(r2.rows);
-      return res.json(r2.rows);
+      const q3 = 'SELECT * FROM trainingoffers WHERE (training = $1 AND ("for_user" = $2 OR "for_user" IS NULL))';
+      const r3 = await query(q3, [r2.rows[0].training, data.data.cid]);
+      console.log(r3.rows);
+      return res.json(r3.rows);
     }
-    return res.json(null);
+    return res.json({ response: 'null' });
   } catch (error) {
     console.log(error);
     return res.json({ response: 'error' });

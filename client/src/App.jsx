@@ -8,6 +8,7 @@ import AdminPanel from './views/AdminPanel/AdminPanel';
 import MentorPanel from './views/MentorPanel/MentorPanel';
 import MentorPanelOffer from './views/MentorPanel/MentorPanelOffer';
 import AdminUserPanel from './views/AdminPanel/AdminUserPanel';
+import AprovedStations from './views/Profile/AprovedStations';
 import './assets/styles/config.scss';
 import './assets/styles/grid.scss';
 import TrainingMain from './views/Training/TrainingMain';
@@ -50,6 +51,7 @@ export default function App() {
             <Schema>
               <Route exact path="/training" children={ <TrainingMain/> } />
               <Route exact path="/training/offers" children={ <TrainingOffers/> } />
+              <Route exact path="/user/aprovedstations" children={ <AprovedStations/> } />
               <Route exact path="/admin">
                 {!admin ? <Redirect to="/profile" /> : <AdminPanel />}
               </Route>

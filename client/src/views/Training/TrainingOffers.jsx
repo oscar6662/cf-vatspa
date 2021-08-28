@@ -12,13 +12,14 @@ export default function TrainingOffers(){
     const [isError, setIsError] = useState(false);
     const [data, setData] = useState([]);
     const [offersExist, isoffersExist] = useState(true);
-
+    const [reload, doReaload] = useState(false);
      useEffect(() => {
       const fetchData = async () => {
         try {
             const r = await fetch('/api/availtrainingoffers');
             const j = await r.json();
-            if(j === null) isoffersExist(false);
+            console.log(j);
+            if(j === null || j.length === 0 || j.response === 'enrolled') isoffersExist(false);
             setData(j);            
         } catch (error) {
             setIsError(true)
@@ -42,7 +43,8 @@ export default function TrainingOffers(){
         training: data.training,
         mentor: data.id
       })
-  })
+    })
+    doReaload(!reload);
   }
 return(
   <>
@@ -55,6 +57,7 @@ return(
         </h1>
       ):(
         !offersExist ? (
+          data.response === "enrolled" ? <>Ya tienes un training programado </>:
           <h1>No hay ninguna oferta disponible</h1>
         ):(
           <div className = {`col-5 ${s.main__avl_trainings}`}>
