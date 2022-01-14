@@ -1,7 +1,7 @@
 import express from 'express';
 import dotenv from 'dotenv';
 import passport from 'passport';
-import path, {dirname} from 'path';
+import path, { dirname } from 'path';
 import cors from 'cors';
 import { fileURLToPath } from 'url';
 import {
@@ -36,6 +36,7 @@ app.use(express.static(path.join(__dirname, '/../client/build')));
 app.use(cors());
 app.use(express.json());
 app.use(passport.initialize());
+
 app.use(authRouter);
 app.use(trainingRouter);
 app.use(adminRouter);
@@ -66,24 +67,24 @@ app.get('/api/user/mentor', requireAuthentication, async (req, res) => {
   return res.json(await userIsMentor(req.cookies.token));
 });
 
-app.get('/api/user/reqtraining',isAllowedToRequestTraining);
+app.get('/api/user/reqtraining', isAllowedToRequestTraining);
 
 app.get('/api/user/availtrainings', async (req, res) => {
-  return res.json( {trainings: await availableTrainings(req.cookies.token)});
+  return res.json({ trainings: await availableTrainings(req.cookies.token) });
 });
 
 app.get('/api/user/completedtrainings', async (req, res) => {
-  return res.json( {trainings: await completedTrainings(req.cookies.token)});
+  return res.json({ trainings: await completedTrainings(req.cookies.token) });
 });
 
 app.get('/api/user/:id', requireAuthentication, async (req, res) => {
-  const {id} = req.params;
+  const { id } = req.params;
   const data = await specificUserData(id);
   return res.json(data[0]);
 });
 
 app.get('/api/users', async (req, res) => {
-  return res.json( await allUsers() );
+  return res.json(await allUsers());
 });
 
 app.get('/api/test', (req, res) => {
@@ -92,7 +93,7 @@ app.get('/api/test', (req, res) => {
 });
 
 app.get('*', (req, res) => {
-  res.sendFile(path.join(__dirname+'/../client/build/index.html'));
+  res.sendFile(path.join(__dirname + '/../client/build/index.html'));
 });
 
 function notFoundHandler(req, res) {

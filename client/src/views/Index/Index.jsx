@@ -1,26 +1,9 @@
-import React, { useState, useEffect  } from 'react';
+import React from 'react';
 
 import s from './Index.module.scss';
 import logo from '../../assets/img/VATSPA_LOGO.png';
 
 export default function Index(){
-  const [data, setData] = useState([]);
-  const [isLoading, setIsLoading] = useState(false);
-
-  {/** 
-    useEffect(() => {
-    const fetchData = async () => {
-      setIsLoading(true);
-      const result = await fetch('/api/user');
-      const json = await result.json();
-      console.log(json);
-      setData(json);
-      setIsLoading(false);
-    };
-    fetchData();
-  },[true]);
-*/}
-
   return(
     <div className = {s.root}>
       <div className = {s.root__box}>

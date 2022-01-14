@@ -84,38 +84,67 @@ export async function createUser(data, r) {
   const token = jwt.sign(payload, process.env.JWT_SECRET, tokenOptions);
   const expiry = new Date(Date.now() + r.expires_in * 1000);
   const q = 'INSERT INTO users'
-    + '(id, user_name, user_email, mentor, admin, jwt, access, refresh, date)'
-    + 'VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9)';
+    + '(id, user_name, user_email, rating mentor, admin, jwt, access, refresh, date)'
+    + 'VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10)';
 
   const q2 = `CREATE TABLE IF NOT EXISTS user_${data.cid} (`
     + 'id integer unique not null,'
-    + 'Madrid boolean not null,'
-    + 'Palma boolean not null,'
-    + 'Barcelona boolean not null,'
-    + 'S1 boolean not null,'
-    + 'S2 boolean not null,'
-    + 'S3 boolean not null,'
-    + 'C1 boolean not null);';
+    + 'training_airport varchar(4) not null,'
+    + 'mad integer not null default 0,'
+    + 'pmi integer not null default 0,'
+    + 'bcn integer not null default 0,'
+    + 'basic boolean not null default false,'
+    + 'glesson boolean not null default false,'
+    + 'atsim1 boolean not null default false,'
+    + 'intro boolean not null default false,'
+    + 'gexam boolean not null default false,'
+    + 's1 boolean not null default false,x'
+    + 'tlesson boolean not null default false,'
+    + 'tintro boolean not null default false,'
+    + 'texam boolean not null default false,'
+    + 'atsim2 boolean not null default false,'
+    + 's2 boolean not null default false,'
+    + 'tmadprep boolean not null default false,'
+    + 'tbcnprep boolean not null default false,'
+    + 'tpmiprep boolean not null default false,'
+    + 'alesson boolean not null default false,'
+    + 'aintro boolean not null default false,'
+    + 'aintroadv boolean not null default false,'
+    + 'atsim3 boolean not null default false,'
+    + 'aexam boolean not null default false,'
+    + 's3 boolean not null default false,'
+    + 'amadprep boolean not null default false,'
+    + 'abcnprep boolean not null default false,'
+    + 'apmiprep boolean not null default false,'
+    + 'tmadadv boolean not null default false,'
+    + 'tbcnadv boolean not null default false,'
+    + 'tpmiadv boolean not null default false,'
+    + 'rlesson boolean not null default false,'
+    + 'rintro boolean not null default false,'
+    + 'radv boolean not null default false,'
+    + 'atsim4 boolean not null default false,'
+    + 'c1 boolean not null default false);';
 
   const q3 = `INSERT INTO user_${data.cid}`
     // eslint-disable-next-line max-len
-    + '(id, Madrid, Palma, Barcelona, S1, S2, S3, C1) VALUES($1, false, false, false, $2, $3, $4, $5)';
+    + '(id, training_airport, s1, s2, s3, c1) VALUES($1, $2, $3, $4, $5, $6)';
 
   const q4 = `CREATE TABLE IF NOT EXISTS trainings_${data.cid} (`
-  + 'training varchar not null,'
-  + 'pass boolean not null,'
-  + 'mentor varchar not null,'
-  + 'date date not null,'
-  + 'comments varchar);';
+    + 'training varchar not null,'
+    + 'pass boolean not null,'
+    + 'mentor varchar not null,'
+    + 'date date not null,'
+    + 'comments varchar);';
 
   try {
     await query(q,
       [data.cid, data.personal.name_full,
-        data.personal.email, false, false,
+        data.personal.email, data.vatsim.rating.id, false, false,
         token, r.access_token, r.refresh_token, expiry,
       ]);
     await query(q2);
     await query(q3, [data.cid,
+      'LEIB',
       data.vatsim.rating.id > 1,
       data.vatsim.rating.id > 2,
       data.vatsim.rating.id > 3,

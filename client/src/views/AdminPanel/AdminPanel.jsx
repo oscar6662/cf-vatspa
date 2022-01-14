@@ -1,9 +1,8 @@
-import React, {useEffect, useState} from 'react';
+import React, {useState} from 'react';
 import { Table, Input } from "antd";
 import { useTableSearch } from './useTableSearch';
 import { userColumns } from "./columns";
 
-import ReactLoading from 'react-loading';
 import s from './AdminPanel.module.scss';
 import "antd/lib/table/style/index.css";
 import "antd/lib/input/style/index.css";

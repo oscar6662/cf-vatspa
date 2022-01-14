@@ -19,7 +19,7 @@ export default function TrainingOffers(){
             const r = await fetch('/api/availtrainingoffers');
             const j = await r.json();
             console.log(j);
-            if(j === null || j.length === 0 || j.response === 'enrolled') isoffersExist(false);
+            if(j === undefined || j.length === 0 || j.response === 'enrolled' || j.response === 'null') isoffersExist(false);
             setData(j);            
         } catch (error) {
             setIsError(true)

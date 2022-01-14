@@ -43,16 +43,28 @@ export async function availableTrainings(token) {
   const q1 = 'SELECT * FROM trainingrequests WHERE id = $1';
   const data3 = await query(q1, [data.data.cid]);
   if (data3.rows[0] !== undefined) return 'requested';
-  const q2 = 'SELECT * FROM trainings WHERE id_student = $1';
+  const q2 = 'SELECT * FROM trainings WHERE $1 = any (id_student);';
   const data4 = await query(q2, [data.data.cid]);
   if (data4.rows[0] !== undefined) return 'enrolled';
   const q = `SELECT * FROM user_${data.data.cid}`;
+
   const data2 = await query(q);
   const r = data2.rows[0];
+
+  if (data.data.vatsim.subdivision.id !== 'SPN') {
+    trainings = ['Visitor'];
+    return trainings;
+  }
+
+  if (data.data.vatsim.rating.id > 0 && r.basic === false) {
+    trainings = ['Familiarization'];
+    return trainings;
+  }
+
   for (const key in r) {
     if (r[key] === false) {
       trainings = [...trainings, key];
-      if (key.charAt(0) === 's') break;
+      break;
     }
   }
   console.log(trainings);
@@ -155,9 +167,9 @@ router.get('/api/availtrainingoffers', requireAuthentication, async (req, res) =
   const { token } = req.cookies;
   const data = await userData(token);
   try {
-    const q1 = 'SELECT * FROM trainings WHERE id_student  = $1';
+    const q1 = 'SELECT * FROM trainings WHERE $1 = any (id_student)';
     const r1 = await query(q1, [data.data.cid]);
-    if (r1.rows[0] !== undefined) return res.json({ response: 'enrolled'});
+    if (r1.rows[0] !== undefined) return res.json({ response: 'enrolled' });
     const q2 = 'SELECT * FROM trainingrequests WHERE id = $1';
     const r2 = await query(q2, [data.data.cid]);
     if (r2.rows[0] !== undefined) {

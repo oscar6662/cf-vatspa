@@ -21,7 +21,6 @@ export default function Profile(){
             const j3 = await r3.json();
             setData(j1);
             isValidTraining(j2);
-            console.log(j3.length);
             setTrainings(j3);
         } catch (error) {
             console.log(error);
