@@ -84,7 +84,8 @@ export async function createUser(data, r) {
   const token = jwt.sign(payload, process.env.JWT_SECRET, tokenOptions);
   const expiry = new Date(Date.now() + r.expires_in * 1000);
   const q = 'INSERT INTO users'
-    + '(id, user_name, user_email, rating mentor, admin, jwt, access, refresh, date)'
+    // eslint-disable-next-line max-len
+    + '(id, user_name, user_email, rating, local_controller, mentor, admin, jwt, access, refresh, date)'
     + 'VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10)';
 
   const q2 = `CREATE TABLE IF NOT EXISTS user_${data.cid} (`
@@ -137,9 +138,11 @@ export async function createUser(data, r) {
     + 'comments varchar);';
 
   try {
+    let lcontroller = 
     await query(q,
       [data.cid, data.personal.name_full,
-        data.personal.email, data.vatsim.rating.id, false, false,
+        data.personal.email, data.vatsim.rating.id, data.vatsim.subdivision.code === 'SPN',
+        false, false,
         token, r.access_token, r.refresh_token, expiry,
       ]);
     await query(q2);
