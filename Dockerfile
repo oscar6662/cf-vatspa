@@ -1,6 +1,5 @@
 # pull official base image
-FROM node:13.12.0-alpine
-
+FROM docker.vatsimspain.es/ci-cd/php:7.4
 # set working directory
 WORKDIR /app
 
