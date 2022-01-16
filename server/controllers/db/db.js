@@ -4,8 +4,8 @@ import dotenv from 'dotenv';
 dotenv.config();
 
 const {
-  DATABASE_HOST: host,
-  DATABASE_USER: user,
+  DATABASE_HOST: host = '127.28.0.1',
+  DATABASE_USER: user = 'vatspa_formacion',
   DATABASE_PASSWORD: password,
   // NODE_ENV: nodeEnv = 'development',
 } = process.env;
