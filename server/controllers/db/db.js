@@ -11,6 +11,9 @@ const {
 } = process.env;
 
 if (!host) {
+  console.log(host);
+  console.log(user);
+  console.log(password);
   console.error('Vantar DATABASE_URL!');
   process.exit(1);
 }
