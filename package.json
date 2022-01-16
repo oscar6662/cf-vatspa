@@ -19,6 +19,7 @@
     "eslint-config-airbnb-base": "^14.2.1",
     "express": "^4.17.1",
     "jsonwebtoken": "^8.5.1",
+    "mariadb": "^2.5.5",
     "node-fetch": "^2.6.1",
     "node-sass": "^6.0.0",
     "passport": "^0.4.1",

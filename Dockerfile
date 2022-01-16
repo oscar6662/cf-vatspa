@@ -1,5 +1,5 @@
 # pull official base image
-FROM docker.vatsimspain.es/ci-cd/php:7.4
+# FROM docker.vatsimspain.es/ci-cd/php:7.4
 # set working directory
 WORKDIR /app
 
