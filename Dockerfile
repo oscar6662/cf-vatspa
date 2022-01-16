@@ -10,10 +10,7 @@ ENV PATH /app/node_modules/.bin:$PATH
 COPY package.json ./
 COPY package-lock.json ./
 RUN npm install
-RUN cd /client
-RUN npm install
-RUN npm run build
-RUN cd ..
+RUN npm build
 
 # add app
 COPY . ./
