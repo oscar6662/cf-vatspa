@@ -138,7 +138,6 @@ export async function createUser(data, r) {
     + 'comments varchar);';
 
   try {
-    let lcontroller = 
     await query(q,
       [data.cid, data.personal.name_full,
         data.personal.email, data.vatsim.rating.id, data.vatsim.subdivision.code === 'SPN',

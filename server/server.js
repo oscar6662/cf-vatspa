@@ -29,7 +29,7 @@ import {
 dotenv.config();
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
-const PORT = process.env.PORT || 5000;
+const PORT = process.env.PORT || 443;
 
 const app = express();
 app.use(express.static(path.join(__dirname, '/../client/build')));
@@ -88,7 +88,6 @@ app.get('/api/users', async (req, res) => {
 });
 
 app.get('/api/test', (req, res) => {
-  console.log(req.user);
   res.json(req.user);
 });
 
