@@ -1,0 +1,14 @@
+.box-pool{
+  padding-top:160px;
+  display:flex;
+  justify-content: center;
+  flex-wrap: wrap;
+  .box{
+    margin:1rem;
+    padding:1rem;
+    background: rgba(7, 53, 95, 0.548);
+    box-shadow: 3px 4px rgba(70, 70, 70, 0.767);
+    border-radius: 3px;
+    min-height: 250px;
+  }
+}
