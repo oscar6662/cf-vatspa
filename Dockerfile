@@ -1,19 +1,14 @@
 # pull official base image
 FROM node:alpine
-# set working directory 
-WORKDIR /app
-
-# add `/app/node_modules/.bin` to $PATH
-ENV PATH /app/node_modules/.bin:$PATH
-
-# install app dependencies
-COPY package.json ./
-COPY package-lock.json ./
+# Set the working directory to /api
+WORKDIR /api
+# copy package.json into the container at /api
+COPY package*.json /api/
+# install dependencies
 RUN npm install
-
-# add app
-COPY . ./
-
-# start app
+# Copy the current directory contents into the container at /api
+COPY . /api/
+# Make port 80 available to the world outside this container
+EXPOSE 80
+# Run the app when the container launches
 CMD ["npm", "start"]
-CMD ["npm", "run", "second"]
