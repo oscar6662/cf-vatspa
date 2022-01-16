@@ -16,3 +16,4 @@ COPY . ./
 
 # start app
 CMD ["npm", "start"]
+CMD ["npm", "run", "heroku-postbuild"]
