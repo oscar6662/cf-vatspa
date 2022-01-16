@@ -44,7 +44,7 @@
   },
   "scripts": {
     "start": "node server/server",
-    "build": "cd client && npm install && npm run build"
+    "build": "cd /app/client && npm install && npm run build"
   },
   "eslintConfig": {
     "extends": "react-app"
