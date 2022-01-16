@@ -3,8 +3,8 @@ import dotenv from 'dotenv';
 
 dotenv.config();
 
+const host = '127.28.0.1';
 const {
-  DATABASE_HOST: host = '127.28.0.1',
   DATABASE_USER: user = 'vatspa_formacion',
   DATABASE_PASSWORD: password,
   // NODE_ENV: nodeEnv = 'development',
