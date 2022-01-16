@@ -9,11 +9,9 @@ const {
   DATABASE_PASSWORD: password,
   // NODE_ENV: nodeEnv = 'development',
 } = process.env;
+console.log(host);
 
 if (!host) {
-  console.log(host);
-  console.log(user);
-  console.log(password);
   console.error('Vantar DATABASE_URL!');
   process.exit(1);
 }
