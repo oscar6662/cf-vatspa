@@ -42,7 +42,6 @@ export async function requireAuthentication(req, res, next) {
 
 export async function isAuthenticated(req) {
   const { token } = req.cookies;
-  console.log('token:');
   if (token == null) return false;
   const verify = jwt.verify(token, process.env.JWT_SECRET, (err, user) => {
     if (err) return false;
