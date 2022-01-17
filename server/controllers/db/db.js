@@ -38,8 +38,8 @@ export async function query(text, params) {
   let client;
   try {
     client = await pool.getConnection();
-    console.log(text, params);
     const result = await client.query(text, params);
+    console.log(result);
     return result;
   } catch (e) {
     console.log(e);
