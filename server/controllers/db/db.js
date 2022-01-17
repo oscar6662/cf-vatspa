@@ -39,11 +39,12 @@ export async function query(text, params) {
   try {
     client = await pool.getConnection();
     const result = await client.query(text, params);
-    console.log(result);
+    console.log(result[0]);
+    console.log(result[0].count);
     return result;
   } catch (e) {
     console.log(e);
-  } finally {
-    if (client) return client.end();
   }
+  client.end();
+  return undefined;
 }
