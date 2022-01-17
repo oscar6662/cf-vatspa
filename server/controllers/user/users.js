@@ -86,7 +86,7 @@ export async function createUser(data, r) {
   const q = 'INSERT INTO users'
     // eslint-disable-next-line max-len
     + '(id, user_name, user_email, rating, local_controller, mentor, admin, jwt, access, refresh, date)'
-    + 'VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11)';
+    + 'VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11);';
 
   const q2 = `CREATE TABLE IF NOT EXISTS user_${data.cid} (`
     + 'id integer unique not null,'
@@ -131,17 +131,17 @@ export async function createUser(data, r) {
     + '(id, training_airport, s1, s2, s3, c1) VALUES($1, $2, $3, $4, $5, $6)';
 
   const q4 = `CREATE TABLE IF NOT EXISTS trainings_${data.cid} (`
-    + 'training varchar not null,'
+    + 'training varchar(64) not null,'
     + 'pass boolean not null,'
-    + 'mentor varchar not null,'
+    + 'mentor varchar(64) not null,'
     + 'date date not null,'
-    + 'comments varchar);';
+    + 'comments varchar(1024));';
 
   try {
     await query(q,
       [data.cid, data.personal.name_full,
         data.personal.email, data.vatsim.rating.id, 
-        data.vatsim.subdivision.code === 'SPN', false, false,
+        (data.vatsim.subdivision.code === 'SPN'), false, false,
         token, r.access_token, r.refresh_token, expiry,
       ]);
     await query(q2);
