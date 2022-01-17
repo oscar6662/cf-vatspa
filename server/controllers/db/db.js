@@ -43,6 +43,6 @@ export async function query(text, params) {
   } catch (e) {
     console.log(e);
   } finally {
-    if (conn) return client.end();
+    if (client) return client.end();
   }
 }

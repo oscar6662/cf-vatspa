@@ -52,7 +52,7 @@ export async function userIsMentor(token) {
 }
 
 export async function userExists(id) {
-  const q = 'SELECT COUNT(1) FROM users WHERE id = $1';
+  const q = 'SELECT COUNT(*) FROM users WHERE id = $1';
   try {
     const r = await query(q, [id]);
     if (r.rows[0].count === '1') return true;
@@ -86,7 +86,7 @@ export async function createUser(data, r) {
   const q = 'INSERT INTO users'
     // eslint-disable-next-line max-len
     + '(id, user_name, user_email, rating, local_controller, mentor, admin, jwt, access, refresh, date)'
-    + 'VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10)';
+    + 'VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11)';
 
   const q2 = `CREATE TABLE IF NOT EXISTS user_${data.cid} (`
     + 'id integer unique not null,'
@@ -99,7 +99,7 @@ export async function createUser(data, r) {
     + 'atsim1 boolean not null default false,'
     + 'intro boolean not null default false,'
     + 'gexam boolean not null default false,'
-    + 's1 boolean not null default false,x'
+    + 's1 boolean not null default false,'
     + 'tlesson boolean not null default false,'
     + 'tintro boolean not null default false,'
     + 'texam boolean not null default false,'
@@ -140,8 +140,8 @@ export async function createUser(data, r) {
   try {
     await query(q,
       [data.cid, data.personal.name_full,
-        data.personal.email, data.vatsim.rating.id, data.vatsim.subdivision.code === 'SPN',
-        false, false,
+        data.personal.email, data.vatsim.rating.id, 
+        data.vatsim.subdivision.code === 'SPN', false, false,
         token, r.access_token, r.refresh_token, expiry,
       ]);
     await query(q2);
@@ -156,7 +156,6 @@ export async function createUser(data, r) {
     console.log(error);
     return error;
   }
-  console.log(token);
   return token;
 }
 

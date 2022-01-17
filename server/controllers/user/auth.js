@@ -96,7 +96,6 @@ router.get('/api/auth/callback', async (req, res) => {
     res.status(401).json({ error });
   }
   const r = await result.json();
-  console.log(r);
   let data = '';
   try {
     data = await fetch(`${process.env.REACT_APP_API_URL}/api/user`, {
@@ -109,14 +108,12 @@ router.get('/api/auth/callback', async (req, res) => {
     res.status(401).json({ error });
   }
   const d = await data.json();
-  console.log(d);
   if (d.message === 'Unauthenticated.' || d.data.oauth.token_valid === 'undefined') {
     return res.sendStatus(403);
   }
 
   if (d.data.oauth.token_valid === 'true') {
     let token;
-    console.log(await userExists(d.data.cid));
     if (await userExists(d.data.cid)) {
       req.user = d.data.cid;
       token = await makeToken(d.data, r);

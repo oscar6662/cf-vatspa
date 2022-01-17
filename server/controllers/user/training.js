@@ -1,11 +1,7 @@
 /* eslint-disable no-restricted-syntax */
 // import fetch from 'node-fetch';
 import express from 'express';
-import dotenv from 'dotenv';
-import jwt from 'jsonwebtoken';
-import fetch from 'node-fetch';
 import cookieParser from 'cookie-parser';
-import cors from 'cors';
 import { query } from '../db/db.js';
 import { userData } from './users.js';
 import { requireAuthentication } from './auth.js';
@@ -41,10 +37,10 @@ export async function availableTrainings(token) {
   let trainings = [];
   const data = await userData(token);
   const q1 = 'SELECT * FROM trainingrequests WHERE id = $1';
-  const data3 = await query(q1, [data.data.cid]);
+  const data3 = await query(q1, data.data.cid);
   if (data3.rows[0] !== undefined) return 'requested';
   const q2 = 'SELECT * FROM trainings WHERE $1 = any (id_student);';
-  const data4 = await query(q2, [data.data.cid]);
+  const data4 = await query(q2, data.data.cid);
   if (data4.rows[0] !== undefined) return 'enrolled';
   const q = `SELECT * FROM user_${data.data.cid}`;
 
@@ -67,7 +63,6 @@ export async function availableTrainings(token) {
       break;
     }
   }
-  console.log(trainings);
   return trainings;
 }
 
@@ -82,9 +77,8 @@ router.post('/api/user/trainingrequest', requireAuthentication, async (req, res)
   const { token } = req.cookies;
   const data = await userData(token);
   const { dates, training } = req.body;
-  console.log(training);
   try {
-    const q = 'INSERT INTO "trainingrequests" (id, training, availabledates) VALUES ($1, $2, $3)';
+    const q = 'INSERT INTO trainingrequests (id, training, availabledates) VALUES ($1, $2, $3)';
     await query(q, [data.data.cid, training, dates]);
     res.json({ response: 'training Request added succesfully' });
   } catch (error) {
