@@ -1,6 +1,7 @@
 import dotenv from 'dotenv';
 import fetch from 'node-fetch';
 import jwt from 'jsonwebtoken';
+import moment from 'moment';
 import { query } from '../db/db.js';
 
 dotenv.config();
@@ -24,7 +25,7 @@ export async function userData(token) {
 export async function specificUserData(id) {
   const q = 'SELECT * FROM users WHERE id = ?';
   try {
-    const r = await query(q, parseInt(id));
+    const r = await query(q, [parseInt(id, 10)]);
     return r.rows;
   } catch (e) {
     return { error: e };
@@ -54,7 +55,7 @@ export async function userIsMentor(token) {
 export async function userExists(id) {
   const q = 'SELECT COUNT(*) FROM users WHERE id = ?';
   try {
-    const r = await query(q, parseInt(id));
+    const r = await query(q, [parseInt(id, 10)]);
     if (r.rows[0].count === '1') return true;
     return false;
   } catch (error) {
@@ -83,7 +84,7 @@ export async function createUser(data, r) {
   const tokenOptions = { expiresIn: r.expires_in };
   const token = jwt.sign(payload, process.env.JWT_SECRET, tokenOptions);
   const expiry = new Date(Date.now() + r.expires_in * 1000);
-  const q = `INSERT INTO users`
+  const q = 'INSERT INTO users'
     // eslint-disable-next-line max-len
     + '(id, user_name, user_email, rating, local_controller, active_controller, mentor, admin, jwt, access, refresh, date) '
     + 'VALUES (?.?,?,?,?,?,?,?,?,?,?,?)';
@@ -139,13 +140,13 @@ export async function createUser(data, r) {
 
   try {
     await query(q,
-      [parseInt(data.cid), data.personal.name_full,
-        data.personal.email, parseInt(data.vatsim.rating.id), 
+      [parseInt(data.cid, 10), data.personal.name_full,
+        data.personal.email, parseInt(data.vatsim.rating.id, 10), 
         (data.vatsim.subdivision.code === 'SPN'), false, false, false,
-        token, r.access_token, r.refresh_token, expiry.toISOString().slice(0, 19).replace('T'|'Z', ' '),
+        token, r.access_token, r.refresh_token, moment(expiry).format('YYYY-MM-DD  HH:mm:ss.000'),
       ]);
     await query(q2);
-    await query(q3, [parseInt(data.cid),
+    await query(q3, [parseInt(data.cid, 10),
       'LEIB',
       data.vatsim.rating.id > 1,
       data.vatsim.rating.id > 2,
