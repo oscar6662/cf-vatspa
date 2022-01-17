@@ -179,3 +179,4 @@ router.get('/api/availtrainingoffers', requireAuthentication, async (req, res) =
     return res.json({ response: 'error' });
   }
 });
+
