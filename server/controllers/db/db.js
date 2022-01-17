@@ -7,11 +7,8 @@ const {
   DATABASE_HOST: host,
   DATABASE_USER: user,
   DATABASE_PASSWORD: password,
+  DATABASE: database,
 } = process.env;
-
-console.log(host);
-console.log(user);
-console.log(password);
 
 if (!host) {
   console.error('Vantar DATABASE_URL!');
@@ -22,6 +19,7 @@ const pool = mariadb.createPool({
   host: host,
   user: user,
   password: password,
+  database: 'vatspa_formacion',
   port: '3306',
 });
 
