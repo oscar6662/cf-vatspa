@@ -68,7 +68,7 @@ export async function allUsers() {
   const q = 'SELECT user_name, id, mentor, admin FROM users';
   try {
     const r = await query(q);
-    return r.rows;
+    return r;
   } catch (error) {
     return false;
   }
