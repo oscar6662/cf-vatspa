@@ -3,14 +3,16 @@ import dotenv from 'dotenv';
 
 dotenv.config();
 
-const host = '127.28.0.1';
 const {
-  DATABASE_USER: user = 'vatspa_formacion',
+  DATABASE_HOST: host,
+  DATABASE_USER: user,
   DATABASE_PASSWORD: password,
 } = process.env;
+
 console.log(host);
 console.log(user);
 console.log(password);
+
 if (!host) {
   console.error('Vantar DATABASE_URL!');
   process.exit(1);
