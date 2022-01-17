@@ -56,8 +56,8 @@ export async function userExists(id) {
   const q = 'SELECT COUNT(*) AS count FROM users WHERE id = ?';
   try {
     const r = await query(q, [parseInt(id, 10)]);
-    console.log(r);
-    if (r[0].count == '1') return true;
+    console.log(r[0]);
+    if (r[0].count === 1) return true;
     return false;
   } catch (error) {
     return false;
