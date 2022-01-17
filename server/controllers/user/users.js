@@ -24,7 +24,7 @@ export async function userData(token) {
 export async function specificUserData(id) {
   const q = 'SELECT * FROM users WHERE id = ?';
   try {
-    const r = await query(q, [id]);
+    const r = await query(q, parseInt(id));
     return r.rows;
   } catch (e) {
     return { error: e };
@@ -54,7 +54,7 @@ export async function userIsMentor(token) {
 export async function userExists(id) {
   const q = 'SELECT COUNT(*) FROM users WHERE id = ?';
   try {
-    const r = await query(q, [id]);
+    const r = await query(q, parseInt(id));
     if (r.rows[0].count === '1') return true;
     return false;
   } catch (error) {
@@ -139,13 +139,13 @@ export async function createUser(data, r) {
 
   try {
     await query(q,
-      [data.cid, data.personal.name_full,
+      [parseInt(data.cid), data.personal.name_full,
         data.personal.email, data.vatsim.rating.id, 
         (data.vatsim.subdivision.code === 'SPN'), false, false,
         token, r.access_token, r.refresh_token, expiry,
       ]);
     await query(q2);
-    await query(q3, [data.cid,
+    await query(q3, [parseInt(data.cid),
       'LEIB',
       data.vatsim.rating.id > 1,
       data.vatsim.rating.id > 2,
