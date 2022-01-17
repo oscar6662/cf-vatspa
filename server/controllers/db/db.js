@@ -18,11 +18,15 @@ if (!host) {
   process.exit(1);
 }
 
-const pool = mariadb.createPool({
+const pool = mariadb.createConnection({
   host: host,
   user: user,
   password: password,
-  connectionLimit: 5,
+  port: '3306',
+}).then(conn => {
+  console.log('connection established.');
+}).catch(err => {
+  console.log(err);
 });
 
 // Notum SSL tengingu við gagnagrunn ef við erum *ekki* í development mode, þ.e.a.s. á local vél
