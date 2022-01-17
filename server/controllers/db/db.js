@@ -30,7 +30,8 @@ export async function query(text, params) {
     return result;
   } catch (e) {
     console.log(e);
+  } finally {
+    client.end();
   }
-  client.end();
   return undefined;
 }
