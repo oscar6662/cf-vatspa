@@ -18,15 +18,11 @@ if (!host) {
   process.exit(1);
 }
 
-const pool = mariadb.createConnection({
+const pool = mariadb.createPool({
   host: host,
   user: user,
   password: password,
   port: '3306',
-}).then(conn => {
-  console.log('connection established.');
-}).catch(err => {
-  console.log(err);
 });
 
 // Notum SSL tengingu við gagnagrunn ef við erum *ekki* í development mode, þ.e.a.s. á local vél
@@ -49,7 +45,6 @@ export async function query(text, params) {
   } catch (e) {
     console.log(e);
   } finally {
-    client.end();
+    if (conn) return client.end();
   }
-  return 'error';
 }
