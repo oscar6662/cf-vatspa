@@ -38,14 +38,14 @@ export async function availableTrainings(token) {
   const data = await userData(token);
   const q1 = 'SELECT * FROM trainingrequests WHERE id = ?';
   const data3 = await query(q1, data.data.cid);
-  if (data3.rows[0] !== undefined) return 'requested';
+  if (data3[0] !== undefined) return 'requested';
   const q2 = 'SELECT * FROM trainings WHERE ? = any (id_student);';
   const data4 = await query(q2, data.data.cid);
-  if (data4.rows[0] !== undefined) return 'enrolled';
+  if (data4[0] !== undefined) return 'enrolled';
   const q = `SELECT * FROM user_${data.data.cid}`;
 
   const data2 = await query(q);
-  const r = data2.rows[0];
+  const r = data2[0];
 
   if (data.data.vatsim.subdivision.id !== 'SPN') {
     trainings = ['Visitor'];
@@ -70,7 +70,7 @@ export async function completedTrainings(token) {
   const data = await userData(token);
   const q = `SELECT * FROM trainings_${data.data.cid}`;
   const data2 = await query(q);
-  return data2.rows[0];
+  return data2[0];
 }
 
 router.post('/api/user/trainingrequest', requireAuthentication, async (req, res) => {
@@ -127,7 +127,7 @@ router.get('/api/trainingrequests', requireAuthentication, async (req, res) => {
   try {
     const q = 'SELECT * FROM "trainingrequests"';
     const r = await query(q);
-    res.json(r.rows);
+    res.json(r);
   } catch (error) {
     res.json({ response: 'error' });
   }
@@ -139,7 +139,7 @@ router.get('/api/user/training/requested', requireAuthentication, async (req, re
   try {
     const q = 'SELECT * FROM trainingrequests WHERE id = ?';
     const r = await query(q, [data.data.cid]);
-    res.json(r.rows[0]);
+    res.json(r[0]);
   } catch (error) {
     res.json({ response: 'error' });
   }
@@ -151,7 +151,7 @@ router.get('/api/user/training/confirmed', requireAuthentication, async (req, re
   try {
     const q = 'SELECT * FROM trainings WHERE id_student = ?';
     const r = await query(q, [data.data.cid]);
-    res.json(r.rows);
+    res.json(r);
   } catch (error) {
     res.json({ response: 'error' });
   }
@@ -163,15 +163,15 @@ router.get('/api/availtrainingoffers', requireAuthentication, async (req, res) =
   try {
     const q1 = 'SELECT * FROM trainings WHERE ? = any (id_student)';
     const r1 = await query(q1, [data.data.cid]);
-    if (r1.rows[0] !== undefined) return res.json({ response: 'enrolled' });
+    if (r1[0] !== undefined) return res.json({ response: 'enrolled' });
     const q2 = 'SELECT * FROM trainingrequests WHERE id = ?';
     const r2 = await query(q2, [data.data.cid]);
-    if (r2.rows[0] !== undefined) {
+    if (r2[0] !== undefined) {
       // eslint-disable-next-line max-len
       const q3 = 'SELECT * FROM trainingoffers WHERE (training = ? AND ("for_user" = ? OR "for_user" IS NULL))';
-      const r3 = await query(q3, [r2.rows[0].training, data.data.cid]);
-      console.log(r3.rows);
-      return res.json(r3.rows);
+      const r3 = await query(q3, [r2[0].training, data.data.cid]);
+      console.log(r3);
+      return res.json(r3);
     }
     return res.json({ response: 'null' });
   } catch (error) {

@@ -13,7 +13,7 @@ export async function userData(token) {
     const data = await fetch(`${process.env.REACT_APP_API_URL}/api/user`, {
       headers: {
         Accept: 'application/json',
-        Authorization: `Bearer ${r.rows[0].access}`,
+        Authorization: `Bearer ${r[0].access}`,
       },
     });
     return await data.json();
@@ -26,7 +26,7 @@ export async function specificUserData(id) {
   const q = 'SELECT * FROM users WHERE id = ?';
   try {
     const r = await query(q, [parseInt(id, 10)]);
-    return r.rows;
+    return r;
   } catch (e) {
     return { error: e };
   }
@@ -36,7 +36,7 @@ export async function userIsAdmin(token) {
   const q = 'SELECT admin FROM users WHERE jwt = ?';
   try {
     const r = await query(q, [token]);
-    return await r.rows[0].admin;
+    return await r[0].admin;
   } catch (e) {
     return { error: e };
   }
@@ -46,7 +46,7 @@ export async function userIsMentor(token) {
   const q = 'SELECT mentor FROM users WHERE jwt = ?';
   try {
     const r = await query(q, [token]);
-    return await r.rows[0].mentor;
+    return await r[0].mentor;
   } catch (e) {
     return { error: e };
   }
