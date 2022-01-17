@@ -30,7 +30,7 @@ export async function requireAuthentication(req, res, next) {
   const q = 'SELECT date FROM users WHERE jwt = (?)';
   try {
     const r = await query(q, [token]);
-    if (r.rows.length < 0) return res.status(401).json({ error: 'No token found' });
+    // if (r.rows.length < 0) return res.status(401).json({ error: 'No token found' });
     if (r[0].date < new Date(Date.now())) {
       return res.status(401).json({ error: 'token expired' });
     }
