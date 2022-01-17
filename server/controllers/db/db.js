@@ -17,9 +17,9 @@ if (!host) {
 }
 
 const pool = mariadb.createPool({
-  host,
-  user,
-  password,
+  host: host,
+  user: user,
+  password: password,
   connectionLimit: 5,
 });
 
