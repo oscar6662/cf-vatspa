@@ -54,12 +54,14 @@ export async function isAuthenticated(req) {
   const q = 'SELECT * FROM users WHERE jwt = (?)';
   try {
     const r = await query(q, [token]);
-    console.log(r);
-    if (r.rows.length < 0) return false;
+    console.log(r[0].jwt);
+    console.log(token);
+    // if (r.rows.length < 0) return false;
     if (r[0].date < new Date(Date.now())) return false;
     if (r[0].jwt === token) return true;
-    return true;
+    return false;
   } catch (e) {
+    console.log(e);
     return false;
   }
 }
