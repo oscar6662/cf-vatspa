@@ -31,7 +31,7 @@ export async function requireAuthentication(req, res, next) {
   try {
     const r = await query(q, [token]);
     if (r.rows.length < 0) return res.status(401).json({ error: 'No token found' });
-    if (r.rows[0].date < new Date(Date.now())) {
+    if (r[0].date < new Date(Date.now())) {
       return res.status(401).json({ error: 'token expired' });
     }
     return next();
@@ -56,8 +56,8 @@ export async function isAuthenticated(req) {
     const r = await query(q, [token]);
     console.log(r);
     if (r.rows.length < 0) return false;
-    if (r.rows[0].date < new Date(Date.now())) return false;
-    if (r.rows[0].jwt === token) return true;
+    if (r[0].date < new Date(Date.now())) return false;
+    if (r[0].jwt === token) return true;
     return true;
   } catch (e) {
     return false;
