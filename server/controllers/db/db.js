@@ -16,9 +16,9 @@ if (!host) {
 }
 
 const pool = mariadb.createPool({
-  host: host,
-  user: user,
-  password: password,
+  host,
+  user,
+  password,
   database: 'vatspa_formacion',
   port: '3306',
 });

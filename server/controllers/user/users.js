@@ -53,7 +53,7 @@ export async function userIsMentor(token) {
 }
 
 export async function userExists(id) {
-  const q = 'SELECT COUNT(*) FROM users WHERE id = ?';
+  const q = 'SELECT COUNT(id) FROM users WHERE id = ?';
   try {
     const r = await query(q, [parseInt(id, 10)]);
     if (r.rows[0].count === '1') return true;
