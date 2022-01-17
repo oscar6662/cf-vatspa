@@ -27,7 +27,7 @@ export async function requireAuthentication(req, res, next) {
 
   if (verify === false) return res.status(401).json({ error: 'token verification failed' });
 
-  const q = 'SELECT date FROM users WHERE jwt = ($1)';
+  const q = 'SELECT date FROM users WHERE jwt = (?)';
   try {
     const r = await query(q, [token]);
     if (r.rows.length < 0) return res.status(401).json({ error: 'No token found' });
@@ -52,7 +52,7 @@ export async function isAuthenticated(req) {
 
   if (verify === false) return false;
 
-  const q = 'SELECT * FROM users WHERE jwt = ($1)';
+  const q = 'SELECT * FROM users WHERE jwt = (?)';
   try {
     const r = await query(q, [token]);
     if (r.rows.length < 0) return false;

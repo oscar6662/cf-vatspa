@@ -6,7 +6,7 @@ import { query } from '../db/db.js';
 dotenv.config();
 
 export async function userData(token) {
-  const q = 'SELECT access FROM users WHERE jwt = $1 ';
+  const q = 'SELECT access FROM users WHERE jwt = ?';
   try {
     const r = await query(q, [token]);
     const data = await fetch(`${process.env.REACT_APP_API_URL}/api/user`, {
@@ -22,7 +22,7 @@ export async function userData(token) {
 }
 
 export async function specificUserData(id) {
-  const q = 'SELECT * FROM users WHERE id = $1 ';
+  const q = 'SELECT * FROM users WHERE id = ?';
   try {
     const r = await query(q, [id]);
     return r.rows;
@@ -32,7 +32,7 @@ export async function specificUserData(id) {
 }
 
 export async function userIsAdmin(token) {
-  const q = 'SELECT admin FROM users WHERE jwt = $1 ';
+  const q = 'SELECT admin FROM users WHERE jwt = ?';
   try {
     const r = await query(q, [token]);
     return await r.rows[0].admin;
@@ -42,7 +42,7 @@ export async function userIsAdmin(token) {
 }
 
 export async function userIsMentor(token) {
-  const q = 'SELECT mentor FROM users WHERE jwt = $1 ';
+  const q = 'SELECT mentor FROM users WHERE jwt = ?';
   try {
     const r = await query(q, [token]);
     return await r.rows[0].mentor;
@@ -52,7 +52,7 @@ export async function userIsMentor(token) {
 }
 
 export async function userExists(id) {
-  const q = 'SELECT COUNT(*) FROM users WHERE id = $1';
+  const q = 'SELECT COUNT(*) FROM users WHERE id = ?';
   try {
     const r = await query(q, [id]);
     if (r.rows[0].count === '1') return true;
@@ -86,7 +86,7 @@ export async function createUser(data, r) {
   const q = 'INSERT INTO users'
     // eslint-disable-next-line max-len
     + '(id, user_name, user_email, rating, local_controller, mentor, admin, jwt, access, refresh, date)'
-    + 'VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11);';
+    + 'VALUES (?.?,?,?,?,?,?,?,?,?,?);';
 
   const q2 = `CREATE TABLE IF NOT EXISTS user_${data.cid} (`
     + 'id integer unique not null,'
@@ -128,7 +128,7 @@ export async function createUser(data, r) {
 
   const q3 = `INSERT INTO user_${data.cid}`
     // eslint-disable-next-line max-len
-    + '(id, training_airport, s1, s2, s3, c1) VALUES($1, $2, $3, $4, $5, $6)';
+    + '(id, training_airport, s1, s2, s3, c1) VALUES(?,?,?,?,?,?)';
 
   const q4 = `CREATE TABLE IF NOT EXISTS trainings_${data.cid} (`
     + 'training varchar(64) not null,'
@@ -165,7 +165,7 @@ export async function makeToken(data, r) {
   const token = jwt.sign(payload, process.env.JWT_SECRET, tokenOptions);
   const expiry = new Date(Date.now() + r.expires_in * 1000);
   // eslint-disable-next-line max-len
-  const q = `UPDATE users SET jwt = $1, access = $2, refresh = $3, date = $4 WHERE id = ${data.cid}`;
+  const q = `UPDATE users SET jwt = ?, access = ?, refresh = ?, date = ? WHERE id = ${data.cid}`;
   try {
     await query(q, [token, r.access_token, r.refresh_token, expiry]);
   } catch (error) {

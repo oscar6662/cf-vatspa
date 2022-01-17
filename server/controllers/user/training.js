@@ -36,10 +36,10 @@ export async function isAllowedToRequestTraining(req, res) {
 export async function availableTrainings(token) {
   let trainings = [];
   const data = await userData(token);
-  const q1 = 'SELECT * FROM trainingrequests WHERE id = $1';
+  const q1 = 'SELECT * FROM trainingrequests WHERE id = ?';
   const data3 = await query(q1, data.data.cid);
   if (data3.rows[0] !== undefined) return 'requested';
-  const q2 = 'SELECT * FROM trainings WHERE $1 = any (id_student);';
+  const q2 = 'SELECT * FROM trainings WHERE ? = any (id_student);';
   const data4 = await query(q2, data.data.cid);
   if (data4.rows[0] !== undefined) return 'enrolled';
   const q = `SELECT * FROM user_${data.data.cid}`;
@@ -78,7 +78,7 @@ router.post('/api/user/trainingrequest', requireAuthentication, async (req, res)
   const data = await userData(token);
   const { dates, training } = req.body;
   try {
-    const q = 'INSERT INTO trainingrequests (id, training, availabledates) VALUES ($1, $2, $3)';
+    const q = 'INSERT INTO trainingrequests (id, training, availabledates) VALUES (?,?,?)';
     await query(q, [data.data.cid, training, dates]);
     res.json({ response: 'training Request added succesfully' });
   } catch (error) {
@@ -94,12 +94,12 @@ router.post('/api/trainingaccepted', requireAuthentication, async (req, res) => 
   console.log(training);
   try {
     // eslint-disable-next-line max-len
-    const q = 'INSERT INTO trainings (id_student, id_mentor, training, availabledate) VALUES ($1, $2, $3, $4)';
+    const q = 'INSERT INTO trainings (id_student, id_mentor, training, availabledate) VALUES (?,?,?,?)';
     await query(q, [data.data.cid, mentor, training, dates]);
-    const q1 = 'DELETE FROM trainingrequests WHERE id = $1';
+    const q1 = 'DELETE FROM trainingrequests WHERE id = ?';
     await query(q1, [data.data.cid]);
     // eslint-disable-next-line max-len
-    const q2 = 'DELETE FROM trainingoffers WHERE (id = $1 AND training = $2 AND availabledate = $3)';
+    const q2 = 'DELETE FROM trainingoffers WHERE (id = ? AND training = ? AND availabledate = ?)';
     await query(q2, [mentor, training, dates]);
     res.json({ response: 'training Request added succesfully' });
   } catch (error) {
@@ -114,7 +114,7 @@ router.post('/api/user/traininoffer', requireAuthentication, async (req, res) =>
   const { dates, training } = req.body;
   console.log(dates);
   try {
-    const q = 'INSERT INTO "trainingoffers" (id, training, "availabledate") VALUES ($1, $2, $3)';
+    const q = 'INSERT INTO "trainingoffers" (id, training, "availabledate") VALUES (?,?,?)';
     await query(q, [data.data.cid, training, dates]);
     res.json({ response: 'training Request added succesfully' });
   } catch (error) {
@@ -137,7 +137,7 @@ router.get('/api/user/training/requested', requireAuthentication, async (req, re
   const { token } = req.cookies;
   const data = await userData(token);
   try {
-    const q = 'SELECT * FROM trainingrequests WHERE id = $1';
+    const q = 'SELECT * FROM trainingrequests WHERE id = ?';
     const r = await query(q, [data.data.cid]);
     res.json(r.rows[0]);
   } catch (error) {
@@ -149,7 +149,7 @@ router.get('/api/user/training/confirmed', requireAuthentication, async (req, re
   const { token } = req.cookies;
   const data = await userData(token);
   try {
-    const q = 'SELECT * FROM trainings WHERE id_student = $1';
+    const q = 'SELECT * FROM trainings WHERE id_student = ?';
     const r = await query(q, [data.data.cid]);
     res.json(r.rows);
   } catch (error) {
@@ -161,14 +161,14 @@ router.get('/api/availtrainingoffers', requireAuthentication, async (req, res) =
   const { token } = req.cookies;
   const data = await userData(token);
   try {
-    const q1 = 'SELECT * FROM trainings WHERE $1 = any (id_student)';
+    const q1 = 'SELECT * FROM trainings WHERE ? = any (id_student)';
     const r1 = await query(q1, [data.data.cid]);
     if (r1.rows[0] !== undefined) return res.json({ response: 'enrolled' });
-    const q2 = 'SELECT * FROM trainingrequests WHERE id = $1';
+    const q2 = 'SELECT * FROM trainingrequests WHERE id = ?';
     const r2 = await query(q2, [data.data.cid]);
     if (r2.rows[0] !== undefined) {
       // eslint-disable-next-line max-len
-      const q3 = 'SELECT * FROM trainingoffers WHERE (training = $1 AND ("for_user" = $2 OR "for_user" IS NULL))';
+      const q3 = 'SELECT * FROM trainingoffers WHERE (training = ? AND ("for_user" = ? OR "for_user" IS NULL))';
       const r3 = await query(q3, [r2.rows[0].training, data.data.cid]);
       console.log(r3.rows);
       return res.json(r3.rows);
