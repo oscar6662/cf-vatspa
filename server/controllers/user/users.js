@@ -142,7 +142,7 @@ export async function createUser(data, r) {
     await query(q, [parseInt(data.cid, 10), data.personal.name_full,
       data.personal.email, parseInt(data.vatsim.rating.id, 10),
       (data.vatsim.subdivision.code === 'SPN'), false, false, false,
-      token, r.access_token, r.refresh_token, moment(expiry).format('YYYY-MM-DD  HH:mm:ss.000')]);
+      token, r.access_token, r.refresh_token, moment(expiry).format('YYYY-MM-DD HH:mm:ss.000')]);
     await query(q2);
     await query(q3, [parseInt(data.cid, 10),
       'LEIB',
