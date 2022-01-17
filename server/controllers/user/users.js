@@ -10,10 +10,11 @@ export async function userData(token) {
   const q = 'SELECT access FROM users WHERE jwt = ?';
   try {
     const r = await query(q, [token]);
+    console.log(r);
     const data = await fetch(`${process.env.REACT_APP_API_URL}/api/user`, {
       headers: {
         Accept: 'application/json',
-        Authorization: `Bearer ${r[0].access}`,
+        Authorization: `Bearer ${r.access}`,
       },
     });
     return await data.json();
