@@ -87,7 +87,7 @@ export async function createUser(data, r) {
   const q = 'INSERT INTO users'
     // eslint-disable-next-line max-len
     + '(id, user_name, user_email, rating, local_controller, active_controller, mentor, admin, jwt, access, refresh, date) '
-    + 'VALUES (?.?,?,?,?,?,?,?,?,?,?,?)';
+    + 'VALUES (?,?,?,?,?,?,?,?,?,?,?,?)';
 
   const q2 = `CREATE TABLE IF NOT EXISTS user_${data.cid} (`
     + 'id integer unique not null,'
