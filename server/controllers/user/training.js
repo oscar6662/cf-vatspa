@@ -35,33 +35,37 @@ export async function isAllowedToRequestTraining(req, res) {
 
 export async function availableTrainings(token) {
   let trainings = [];
-  const data = await userData(token);
-  const q1 = 'SELECT * FROM trainingrequests WHERE id = ?';
-  const data3 = await query(q1, data.data.cid);
-  if (data3[0] !== undefined) return 'requested';
-  const q2 = 'SELECT * FROM trainings WHERE ? = any (id_student);';
-  const data4 = await query(q2, data.data.cid);
-  if (data4[0] !== undefined) return 'enrolled';
-  const q = `SELECT * FROM user_${data.data.cid}`;
+  try {
+    const data = await userData(token);
+    const q1 = 'SELECT * FROM trainingrequests WHERE id = ?';
+    const data3 = await query(q1, data.data.cid);
+    if (data3[0] !== undefined) return 'requested';
+    const q2 = 'SELECT * FROM trainings WHERE ? = any (id_student);';
+    const data4 = await query(q2, data.data.cid);
+    if (data4[0] !== undefined) return 'enrolled';
+    const q = `SELECT * FROM user_${data.data.cid}`;
 
-  const data2 = await query(q);
-  const r = data2[0];
+    const data2 = await query(q);
+    const r = data2[0];
 
-  if (data.data.vatsim.subdivision.id !== 'SPN') {
-    trainings = ['Visitor'];
-    return trainings;
-  }
-
-  if (data.data.vatsim.rating.id > 0 && r.basic === false) {
-    trainings = ['Familiarization'];
-    return trainings;
-  }
-
-  for (const key in r) {
-    if (r[key] === false) {
-      trainings = [...trainings, key];
-      break;
+    if (data.data.vatsim.subdivision.id !== 'SPN') {
+      trainings = ['Visitor'];
+      return trainings;
     }
+
+    if (data.data.vatsim.rating.id > 0 && r.basic === false) {
+      trainings = ['Familiarization'];
+      return trainings;
+    }
+
+    for (const key in r) {
+      if (r[key] === false) {
+        trainings = [...trainings, key];
+        break;
+      }
+    }
+  } catch (error) {
+    return ['Error'];
   }
   return trainings;
 }
