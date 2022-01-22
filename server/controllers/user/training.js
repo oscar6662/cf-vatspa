@@ -105,17 +105,16 @@ router.post('/api/user/trainingrequest', requireAuthentication, async (req, res)
 router.post('/api/trainingaccepted', requireAuthentication, async (req, res) => {
   const { token } = req.cookies;
   const data = await userData(token);
-  const { dates, training, mentor } = req.body;
-  console.log(training);
+  const { date, training, mentor } = req.body;
   try {
     // eslint-disable-next-line max-len
     const q = 'INSERT INTO trainings (id_student, id_mentor, training, availabledate) VALUES (?,?,?,?)';
-    await query(q, [data.data.cid, mentor, training, dates]);
+    await query(q, [data.data.cid, mentor, training, date]);
     const q1 = 'DELETE FROM trainingrequests WHERE id = ?';
     await query(q1, [data.data.cid]);
     // eslint-disable-next-line max-len
-    const q2 = 'DELETE FROM trainingoffers WHERE (id = ? AND training = ? AND availabledate = ?)';
-    await query(q2, [mentor, training, dates]);
+    const q2 = 'DELETE FROM trainingoffers WHERE (id = ? AND training = ? AND start = ?)';
+    await query(q2, [mentor, training, date]);
     res.json({ response: 'training Request added succesfully' });
   } catch (error) {
     console.log(error);

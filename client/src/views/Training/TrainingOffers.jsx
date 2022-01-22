@@ -18,7 +18,6 @@ export default function TrainingOffers(){
         try {
             const r = await fetch('/api/availtrainingoffers');
             const j = await r.json();
-            console.log(j);
             if(j === undefined || j.length === 0 || j.response === 'enrolled' || j.response === 'null') isoffersExist(false);
             setData(j);            
         } catch (error) {
@@ -30,7 +29,6 @@ export default function TrainingOffers(){
     },[isError]);
 
   async function handle(data){
-    console.log(data);
     fetch('/api/trainingaccepted ', {
       credentials: 'include',
       method: 'POST',
@@ -39,7 +37,7 @@ export default function TrainingOffers(){
         'Content-Type': 'application/json',
       },
       body: JSON.stringify({
-        dates: data.availabledate,
+        dates: data.start,
         training: data.training,
         mentor: data.id
       })
@@ -64,10 +62,10 @@ return(
             {data.map( i => (
               <Card style={{ width: 300, marginTop: 16 }}>
                 <h2>Dia(s)</h2>
-                <p>{Moment(i.availabledate[0]).format('DD MMMM')}</p>
+                <p>{Moment(i.start).format('DD MMMM')}</p>
                 <Divider />
                 <h2>Entre las horas</h2>
-                <p>{Moment(i.availabledate[0]).format('HH:mm')} - {Moment(i.availabledate[1]).format('HH:mm')}</p>
+                <p>{Moment(i.start).format('HH:mm')} - {Moment(i.end).format('HH:mm')}</p>
                 <Divider />
                 <Button type="primary" onClick={()=>handle(i)}>Aceptar Oferta</Button>
               </Card>
