@@ -25,6 +25,7 @@ import {
   availableTrainings,
   completedTrainings
 } from './controllers/user/training.js';
+import { parse } from 'path/posix';
 
 dotenv.config();
 
@@ -78,10 +79,8 @@ app.get('/api/user/completedtrainings', async (req, res) => {
 });
 
 app.get('/api/user/:id', requireAuthentication, async (req, res) => {
-  console.log(req.params);
   const { id } = req.params;
-  console.log(id);
-  if (id === undefined)
+  if (id === undefined || parseInt(id) === undefined || parseInt(id) == NaN)
     return res.error(500).json('Something went wrong');
   const data = await specificUserData(id);
   return res.json(data[0]);
