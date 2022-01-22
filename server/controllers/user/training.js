@@ -182,7 +182,7 @@ router.get('/api/availtrainingoffers', requireAuthentication, async (req, res) =
     const r2 = await query(q2, [data.data.cid]);
     if (r2[0] !== undefined) {
       // eslint-disable-next-line max-len
-      const q3 = 'SELECT * FROM trainingoffers WHERE (training = ? AND ("for_user" = ? OR "for_user" IS NULL))';
+      const q3 = 'SELECT * FROM trainingoffers WHERE (training = ? AND (for_user = ? OR for_user IS NULL))';
       const r3 = await query(q3, [r2[0].training, data.data.cid]);
       return res.json(r3);
     }
