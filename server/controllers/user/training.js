@@ -86,7 +86,7 @@ router.post('/api/user/trainingrequest', requireAuthentication, async (req, res)
   try {
     const q = 'INSERT INTO trainingrequests (id, training) VALUES (?,?)';
     await query(q, [data.data.cid, training]);
-    const q2 = 'SELECT key FROM trainingrequests WHERE id = ? AND training = ?';
+    const q2 = 'SELECT `key` FROM trainingrequests WHERE id = ? AND training = ?';
     const r2 = await query(q2, [data.data.cid, training]);
     const q3 = 'INSERT INTO trainingrequests_dates (id, date) VALUES (?,?)';
     for (const date in dates) {
@@ -140,7 +140,7 @@ router.post('/api/user/traininoffer', requireAuthentication, async (req, res) =>
 
 router.get('/api/trainingrequests', requireAuthentication, async (req, res) => {
   try {
-    const q = 'SELECT * FROM "trainingrequests"';
+    const q = 'SELECT * FROM trainingrequests';
     const r = await query(q);
     res.json(r);
   } catch (error) {
@@ -176,7 +176,7 @@ router.get('/api/availtrainingoffers', requireAuthentication, async (req, res) =
   const { token } = req.cookies;
   const data = await userData(token);
   try {
-    const q1 = 'SELECT * FROM trainings WHERE ? = any (id_student)';
+    const q1 = 'SELECT * FROM trainings WHERE id_student = ?';
     const r1 = await query(q1, [data.data.cid]);
     if (r1[0] !== undefined) return res.json({ response: 'enrolled' });
     const q2 = 'SELECT * FROM trainingrequests WHERE id = ?';
