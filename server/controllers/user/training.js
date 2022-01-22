@@ -127,10 +127,9 @@ router.post('/api/user/traininoffer', requireAuthentication, async (req, res) =>
   const { token } = req.cookies;
   const data = await userData(token);
   const { dates, training } = req.body;
-  console.log(dates);
   try {
-    const q = 'INSERT INTO "trainingoffers" (id, training, "availabledate") VALUES (?,?,?)';
-    await query(q, [data.data.cid, training, dates]);
+    const q = 'INSERT INTO trainingoffers (id, training, start, end) VALUES (?,?,?,?)';
+    await query(q, [data.data.cid, training, dates[0], dates[1]]);
     res.json({ response: 'training Request added succesfully' });
   } catch (error) {
     console.log(error);
@@ -185,7 +184,6 @@ router.get('/api/availtrainingoffers', requireAuthentication, async (req, res) =
       // eslint-disable-next-line max-len
       const q3 = 'SELECT * FROM trainingoffers WHERE (training = ? AND ("for_user" = ? OR "for_user" IS NULL))';
       const r3 = await query(q3, [r2[0].training, data.data.cid]);
-      console.log(r3);
       return res.json(r3);
     }
     return res.json({ response: 'null' });
