@@ -1,6 +1,7 @@
 /* eslint-disable no-restricted-syntax */
 // import fetch from 'node-fetch';
 import express from 'express';
+import moment from 'moment';
 import cookieParser from 'cookie-parser';
 import { query } from '../db/db.js';
 import { userData } from './users.js';
@@ -43,7 +44,6 @@ export async function availableTrainings(token) {
     // const q2 = 'SELECT * FROM trainings WHERE ? = any (id_student);';
     const q2 = 'SELECT * FROM trainings WHERE id_student = ?';
     const data4 = await query(q2, data.data.cid);
-    console.log(data4);
     if (data4[0] !== undefined) return 'enrolled';
     const q = `SELECT * FROM user_${data.data.cid}`;
 
@@ -84,8 +84,17 @@ router.post('/api/user/trainingrequest', requireAuthentication, async (req, res)
   const data = await userData(token);
   const { dates, training } = req.body;
   try {
-    const q = 'INSERT INTO trainingrequests (id, training, availabledates) VALUES (?,?,?)';
-    await query(q, [data.data.cid, training, dates]);
+    const q = 'INSERT INTO trainingrequests (id, training) VALUES (?,?)';
+    await query(q, [data.data.cid, training]);
+    const q2 = 'SELECT key FROM trainingrequests WHERE id = ? AND training = ?';
+    const r2 = await query(q2, [data.data.cid, training]);
+    const q3 = 'INSERT INTO trainingrequests_dates (id, date) VALUES (?,?)';
+    for (const date in dates) {
+      if (dates[date] !== undefined) {
+        // eslint-disable-next-line no-await-in-loop
+        await query(q3, [r2[0].key, moment(dates[date]).format('YYYY-MM-DD')]);
+      }
+    }
     res.json({ response: 'training Request added succesfully' });
   } catch (error) {
     console.log(error);
