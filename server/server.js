@@ -78,10 +78,10 @@ app.get('/api/user/completedtrainings', async (req, res) => {
   return res.json({ trainings: await completedTrainings(req.cookies.token) });
 });
 
-app.get('/api/user/:id', requireAuthentication, async (req, res) => {
+app.get('/api/user/:id', async (req, res) => {
   const { id } = req.params;
-  if (id === undefined || parseInt(id) === undefined || parseInt(id) == NaN)
-    return res.error(500).json('Something went wrong');
+  if (id === undefined || parseInt(id) === undefined || isNaN(parseInt(id)))
+    return res.status(500).json('Something went wrong');
   const data = await specificUserData(id);
   return res.json(data[0]);
 });

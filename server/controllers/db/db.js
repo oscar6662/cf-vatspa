@@ -9,10 +9,12 @@ const {
   DATABASE_PASSWORD: password,
 } = process.env;
 
+/*
 if (!host) {
   console.error('Vantar DATABASE_URL!');
   process.exit(1);
 }
+*/
 
 const pool = mariadb.createPool({
   host,
