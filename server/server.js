@@ -78,7 +78,9 @@ app.get('/api/user/completedtrainings', async (req, res) => {
 });
 
 app.get('/api/user/:id', requireAuthentication, async (req, res) => {
+  console.log(req.params);
   const { id } = req.params;
+  console.log(id);
   if (id === undefined)
     return res.error(500).json('Something went wrong');
   const data = await specificUserData(id);
