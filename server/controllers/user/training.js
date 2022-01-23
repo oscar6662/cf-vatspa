@@ -53,19 +53,19 @@ export async function availableTrainings(token) {
   if (await hasTraining(data)) return 'enrolled';
   let r;
   try {
-    const q = `SELECT * FROM user_${data.data.cid}`;
+    const q = `SELECT * FROM user_${data.cid}`;
     const [d] = await query(q);
     r = d;
     console.log(r);
   } catch (e) {
     return 'error';
   }
-  if (data.data.vatsim.subdivision.id !== 'SPN') {
+  if (data.vatsim.subdivision.id !== 'SPN') {
     trainings = ['Visitor'];
     return trainings;
   }
 
-  if (data.data.vatsim.rating.id > 0 && r.basic === false) {
+  if (data.vatsim.rating.id > 0 && r.basic === false) {
     trainings = ['Familiarization'];
     return trainings;
   }
