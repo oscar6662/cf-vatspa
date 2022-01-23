@@ -52,6 +52,7 @@ export async function isAllowedToRequestTraining(token) {
 export async function availableTrainings(token) {
   let trainings = [];
   const { data } = await userData(token);
+  console.log(hasRequestedTraining(data));
   if (hasRequestedTraining(data)) return 'requested';
   if (hasTraining(data)) return 'enrolled';
   let r;
