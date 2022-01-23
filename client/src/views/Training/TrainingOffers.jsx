@@ -37,7 +37,7 @@ export default function TrainingOffers(){
         'Content-Type': 'application/json',
       },
       body: JSON.stringify({
-        dates: data.start,
+        date: data.start,
         training: data.training,
         mentor: data.id
       })
