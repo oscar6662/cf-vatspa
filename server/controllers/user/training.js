@@ -109,7 +109,8 @@ router.post('/api/trainingaccepted', requireAuthentication, async (req, res) => 
   try {
     // eslint-disable-next-line max-len
     const q = 'INSERT INTO trainings (id_student, id_mentor, training, availabledate) VALUES (?,?,?,?)';
-    await query(q, [data.data.cid, mentor, training, date]);
+    // eslint-disable-next-line max-len
+    await query(q, [data.data.cid, mentor, training, moment(date).format('YYYY-MM-DD HH:mm:ss.000')]);
     const q3 = 'SELECT `key` FROM trainingrequests WHERE id = ?';
     const r3 = await query(q3, data.data.cid);
     const q4 = 'DELETE FROM trainingrequests_dates WHERE id = ?';
