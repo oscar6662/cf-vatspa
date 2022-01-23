@@ -2,13 +2,13 @@
 // import fetch from 'node-fetch';
 import express from 'express';
 import moment from 'moment';
-import cookieParser from 'cookie-parser';
+// import cookieParser from 'cookie-parser';
 import { query } from '../db/db.js';
 import { userData } from './users.js';
 import { requireAuthentication } from './auth.js';
 
 export const router = express.Router();
-
+/*
 router.use(cookieParser());
 router.use((req, res, next) => {
   res.setHeader('Access-Control-Allow-Origin', 'http://localhost:3000');
@@ -16,58 +16,67 @@ router.use((req, res, next) => {
   res.header('Access-Control-Allow-Credentials', true);
   next();
 });
+*/
 
-export async function isAllowedToRequestTraining(req, res) {
-  const { token } = req.cookies;
-  const data = await userData(token);
-  console.log(data.data);
-  if (data.data.vatsim.subdivision.id === 'SPN') {
-    /**
-     * await fetch(`https://api.vatsim.net/api/ratings/${data.cid}`, {
-      headers: {
-        Accept: 'application/json',
-      },
-    });
-    */
-    return res.json(true);
+async function hasRequestedTraining(data) {
+  try {
+    const q = 'SELECT * FROM trainingrequests WHERE id = ?';
+    const r = await query(q, data.cid);
+    if (r[0] !== undefined) return true;
+  } catch (error) {
+    return false;
   }
-  return res.json(false);
+  return false;
+}
+
+async function hasTraining(data) {
+  try {
+    const q = 'SELECT * FROM trainings WHERE id = ?';
+    const r = await query(q, data.cid);
+    if (r[0] !== undefined) return true;
+  } catch (error) {
+    return false;
+  }
+  return false;
+}
+
+export async function isAllowedToRequestTraining(token) {
+  const { data } = await userData(token);
+  console.log(data);
+  if (await hasRequestedTraining(data) || await hasTraining(data)) return false;
+  return true;
 }
 
 export async function availableTrainings(token) {
   let trainings = [];
+  const { data } = await userData(token);
+  console.log(data);
+  if (hasRequestedTraining(data)) return 'requested';
+  if (hasTraining(data)) return 'enrolled';
+  let r;
   try {
-    const data = await userData(token);
-    const q1 = 'SELECT * FROM trainingrequests WHERE id = ?';
-    const data3 = await query(q1, data.data.cid);
-    if (data3[0] !== undefined) return 'requested';
-    // const q2 = 'SELECT * FROM trainings WHERE ? = any (id_student);';
-    const q2 = 'SELECT * FROM trainings WHERE id_student = ?';
-    const data4 = await query(q2, data.data.cid);
-    if (data4[0] !== undefined) return 'enrolled';
     const q = `SELECT * FROM user_${data.data.cid}`;
+    const [d] = await query(q);
+    r = d;
+    console.log(r);
+  } catch (e) {
+    return 'error';
+  }
+  if (data.data.vatsim.subdivision.id !== 'SPN') {
+    trainings = ['Visitor'];
+    return trainings;
+  }
 
-    const data2 = await query(q);
-    const r = data2[0];
+  if (data.data.vatsim.rating.id > 0 && r.basic === false) {
+    trainings = ['Familiarization'];
+    return trainings;
+  }
 
-    if (data.data.vatsim.subdivision.id !== 'SPN') {
-      trainings = ['Visitor'];
-      return trainings;
+  for (const key in r) {
+    if (r[key] === false) {
+      trainings = [...trainings, key];
+      break;
     }
-
-    if (data.data.vatsim.rating.id > 0 && r.basic === false) {
-      trainings = ['Familiarization'];
-      return trainings;
-    }
-
-    for (const key in r) {
-      if (r[key] === false) {
-        trainings = [...trainings, key];
-        break;
-      }
-    }
-  } catch (error) {
-    return ['Error'];
   }
   return trainings;
 }

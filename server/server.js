@@ -25,7 +25,6 @@ import {
   availableTrainings,
   completedTrainings
 } from './controllers/user/training.js';
-import { parse } from 'path/posix';
 
 dotenv.config();
 
@@ -68,7 +67,9 @@ app.get('/api/user/mentor', requireAuthentication, async (req, res) => {
   return res.json(await userIsMentor(req.cookies.token));
 });
 
-app.get('/api/user/reqtraining', isAllowedToRequestTraining);
+app.get('/api/user/reqtraining', async (req,res) => {
+  return res.json({response: await isAllowedToRequestTraining(req.cookies.token)})
+});
 
 app.get('/api/user/availtrainings', async (req, res) => {
   return res.json({ trainings: await availableTrainings(req.cookies.token) });

@@ -89,7 +89,7 @@ return(
                 <h2>Solicitar Training</h2>
                 <div  href ="#" className={s.main__req__box}>
                   {validTraining ? (
-                    data.vatsim.rating.id < 5 &&<a href = "/req/training">Empieza tu formación</a>
+                    data.vatsim.rating.id < 5 &&<a href = "/req/training">Solicita Formación</a>
                   ):(
                     <div>
                       <a href ="https://vatspa.es/normativa/transferencia-VACC">Transferirte a VATSPA</a>    
