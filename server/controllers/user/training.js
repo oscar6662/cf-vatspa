@@ -24,18 +24,18 @@ async function hasRequestedTraining(data) {
     const r = await query(q, data.cid);
     if (r[0] !== undefined) return true;
   } catch (error) {
-    return false;
+    return true;
   }
   return false;
 }
 
 async function hasTraining(data) {
   try {
-    const q = 'SELECT * FROM trainings WHERE id = ?';
+    const q = 'SELECT * FROM trainings WHERE id_student = ?';
     const r = await query(q, data.cid);
     if (r[0] !== undefined) return true;
   } catch (error) {
-    return false;
+    return true;
   }
   return false;
 }
