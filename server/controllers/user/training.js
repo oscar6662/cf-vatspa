@@ -22,10 +22,8 @@ async function hasRequestedTraining(data) {
   try {
     const q = 'SELECT * FROM trainingrequests WHERE id = ?';
     const r = await query(q, data.cid);
-    console.log(r, r[0], r[0] !== undefined);
     if (r[0] !== undefined) return true;
   } catch (e) {
-    console.log(e);
     return true;
   }
   return false;
@@ -37,7 +35,6 @@ async function hasTraining(data) {
     const r = await query(q, data.cid);
     if (r[0] !== undefined) return true;
   } catch (e) {
-    console.log(e);
     return true;
   }
   return false;
@@ -52,9 +49,8 @@ export async function isAllowedToRequestTraining(token) {
 export async function availableTrainings(token) {
   let trainings = [];
   const { data } = await userData(token);
-  console.log(hasRequestedTraining(data));
-  if (hasRequestedTraining(data)) return 'requested';
-  if (hasTraining(data)) return 'enrolled';
+  if (await hasRequestedTraining(data)) return 'requested';
+  if (await hasTraining(data)) return 'enrolled';
   let r;
   try {
     const q = `SELECT * FROM user_${data.data.cid}`;
