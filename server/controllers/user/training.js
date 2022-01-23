@@ -22,9 +22,10 @@ async function hasRequestedTraining(data) {
   try {
     const q = 'SELECT * FROM trainingrequests WHERE id = ?';
     const r = await query(q, data.cid);
-    console.log(r, r[0]);
+    console.log(r, r[0], r[0] !== undefined);
     if (r[0] !== undefined) return true;
-  } catch (error) {
+  } catch (e) {
+    console.log(e);
     return true;
   }
   return false;
@@ -35,7 +36,8 @@ async function hasTraining(data) {
     const q = 'SELECT * FROM trainings WHERE id_student = ?';
     const r = await query(q, data.cid);
     if (r[0] !== undefined) return true;
-  } catch (error) {
+  } catch (e) {
+    console.log(e);
     return true;
   }
   return false;
