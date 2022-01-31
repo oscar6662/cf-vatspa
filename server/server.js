@@ -21,9 +21,6 @@ import {
 } from './controllers/user/admin.js';
 import {
   router as trainingRouter,
-  isAllowedToRequestTraining,
-  availableTrainings,
-  completedTrainings
 } from './controllers/user/training.js';
 
 dotenv.config();
@@ -65,18 +62,6 @@ app.get('/api/user/admin', requireAuthentication, async (req, res) => {
 
 app.get('/api/user/mentor', requireAuthentication, async (req, res) => {
   return res.json(await userIsMentor(req.cookies.token));
-});
-
-app.get('/api/user/reqtraining', async (req,res) => {
-  return res.json({response: await isAllowedToRequestTraining(req.cookies.token)})
-});
-
-app.get('/api/user/availtrainings', async (req, res) => {
-  return res.json({ trainings: await availableTrainings(req.cookies.token) });
-});
-
-app.get('/api/user/completedtrainings', async (req, res) => {
-  return res.json({ trainings: await completedTrainings(req.cookies.token) });
 });
 
 app.get('/api/user/:id', async (req, res) => {
