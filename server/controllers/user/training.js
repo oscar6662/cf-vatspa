@@ -87,7 +87,7 @@ async function getTrainingDescriptions() {
 router.get('/api/training/descriptions', requireAuthentication, async (res) => {
   const r = getTrainingDescriptions();
   if (r === null) return res.status(500).json('Error parsing training descriptions');
-  return res.json(r);
+  return res.json(JSON.stringify(r));
 });
 
 router.post('/api/training/descriptions', requireAuthentication, async (req, res) => {
