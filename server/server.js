@@ -77,6 +77,8 @@ app.get('/api/users', async (req, res) => {
 });
 
 app.get('/api/test', (req, res) => {
+  console.log(req);
+  console.log(req.user);
   res.json(req.user);
 });
 

@@ -5,7 +5,6 @@ import { userData } from './users.js';
 import { requireAuthentication } from './auth.js';
 
 export const router = express.Router();
-router.use(express.json());
 
 /**
  * training_descriptions
