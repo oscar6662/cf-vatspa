@@ -192,8 +192,8 @@ async function isUserActive(cid) {
 
 export async function availableTrainings(token) {
   const { data } = await userData(token);
-  if (await hasRequestedTraining(data)) return 'requested';
-  if (await hasTraining(data)) return 'enrolled';
+  if (await hasRequestedTraining(data.cid)) return 'requested';
+  if (await hasTraining(data.cid)) return 'enrolled';
   let r;
   try {
     const q = 'SELECT * FROM training_users WHERE id = ?';
