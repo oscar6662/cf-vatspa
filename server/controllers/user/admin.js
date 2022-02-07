@@ -10,7 +10,6 @@ export const router = express.Router();
 router.use(cookieParser());
 
 router.post('/api/admin/editUser', async (req, res) => {
-  console.log(req.body);
   const { aspect, changeTo, id } = req.body;
   try {
     const q = `UPDATE users SET ${aspect} = ? WHERE id = ?`;

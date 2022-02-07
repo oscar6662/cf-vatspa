@@ -24,10 +24,10 @@ export default function App() {
 
     useEffect(() => {
     const fetchData = async () => {
-      setIsLoading(true);
       const result = await fetch('/api/authenticated');
       const json = await result.json();
       setLoggedIn(json.loggedIn);
+      setIsLoading(false);
       if(loggedIn) {
         const r = await fetch('/api/user/admin');
         const j = await r.json();
@@ -36,7 +36,6 @@ export default function App() {
         const j2 = await r2.json();
         setMentor(Boolean(j2));
       }
-      setIsLoading(false);
     };
     fetchData();
   },[loggedIn]);
