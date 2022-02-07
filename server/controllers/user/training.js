@@ -254,7 +254,7 @@ router.get('/api/training/trainingrequest/:id', requireAuthentication, async (re
   const { id } = req.params;
   if (id !== undefined || parseInt(id, 10) !== undefined || !Number.isNaN(parseInt(id, 10))) {
     try {
-      const q = 'SELECT * FROM training¿requests WHERE id = ?';
+      const q = 'SELECT * FROM training_requests WHERE id = ?';
       const r = await query(q, [id]);
       return res.json(r[0]);
     } catch (e) {
