@@ -90,49 +90,7 @@ export async function createUser(data, r) {
     + '(id, user_name, user_email, rating, local_controller, active_controller, mentor, admin, jwt, access, refresh, date) '
     + 'VALUES (?,?,?,?,?,?,?,?,?,?,?,?)';
 
-  const q2 = `CREATE TABLE IF NOT EXISTS user_${data.cid} (`
-    + 'id integer unique not null,'
-    + 'training_airport varchar(4) not null,'
-    + 'mad integer not null default 0,'
-    + 'pmi integer not null default 0,'
-    + 'bcn integer not null default 0,'
-    + 'basic boolean not null default false,'
-    + 'glesson boolean not null default false,'
-    + 'atsim1 boolean not null default false,'
-    + 'intro boolean not null default false,'
-    + 'gexam boolean not null default false,'
-    + 's1 boolean not null default false,'
-    + 'tlesson boolean not null default false,'
-    + 'tintro boolean not null default false,'
-    + 'texam boolean not null default false,'
-    + 'atsim2 boolean not null default false,'
-    + 's2 boolean not null default false,'
-    + 'tmadprep boolean not null default false,'
-    + 'tbcnprep boolean not null default false,'
-    + 'tpmiprep boolean not null default false,'
-    + 'alesson boolean not null default false,'
-    + 'aintro boolean not null default false,'
-    + 'aintroadv boolean not null default false,'
-    + 'atsim3 boolean not null default false,'
-    + 'aexam boolean not null default false,'
-    + 's3 boolean not null default false,'
-    + 'amadprep boolean not null default false,'
-    + 'abcnprep boolean not null default false,'
-    + 'apmiprep boolean not null default false,'
-    + 'tmadadv boolean not null default false,'
-    + 'tbcnadv boolean not null default false,'
-    + 'tpmiadv boolean not null default false,'
-    + 'rlesson boolean not null default false,'
-    + 'rintro boolean not null default false,'
-    + 'radv boolean not null default false,'
-    + 'atsim4 boolean not null default false,'
-    + 'c1 boolean not null default false);';
-
-  const q3 = `INSERT INTO user_${data.cid}`
-    // eslint-disable-next-line max-len
-    + '(id, training_airport, s1, s2, s3, c1) VALUES(?,?,?,?,?,?)';
-
-  const q4 = `CREATE TABLE IF NOT EXISTS trainings_${data.cid} (`
+  const q4 = `CREATE TABLE IF NOT EXISTS training_history_${data.cid} (`
     + 'training varchar(64) not null,'
     + 'pass boolean not null,'
     + 'mentor varchar(64) not null,'
@@ -144,13 +102,6 @@ export async function createUser(data, r) {
       data.personal.email, parseInt(data.vatsim.rating.id, 10),
       (data.vatsim.subdivision.code === 'SPN'), false, false, false,
       token, r.access_token, r.refresh_token, moment(expiry).format('YYYY-MM-DD HH:mm:ss.000')]);
-    await query(q2);
-    await query(q3, [parseInt(data.cid, 10),
-      'LEIB',
-      data.vatsim.rating.id > 1,
-      data.vatsim.rating.id > 2,
-      data.vatsim.rating.id > 3,
-      data.vatsim.rating.id > 4]);
     await query(q4);
   } catch (error) {
     console.log(error);

@@ -15,9 +15,9 @@ export default function Profile(){
         try {
             const r1 = await fetch('/api/user');
             const j1 = await r1.json();
-            const r2 = await fetch('/api/user/reqtraining');
+            const r2 = await fetch('/api/training/isallowedtorequest');
             const j2 = await r2.json();
-            const r3 = await fetch('/api/user/completedtrainings');
+            const r3 = await fetch('/api/training/completedtrainings');
             const j3 = await r3.json();
             setData(j1);
             isValidTraining(j2);

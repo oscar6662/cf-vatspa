@@ -44,7 +44,7 @@ export default function MentorPanelOffer(){
         rangeTimeValue[1].format('YYYY-MM-DD HH:mm:ss'),
       ],
     };
-    fetch('/api/user/traininoffer ', {
+    fetch('/api/training/offer ', {
       credentials: 'include',
       method: 'POST',
       headers: {
