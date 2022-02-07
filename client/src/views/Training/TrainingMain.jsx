@@ -38,18 +38,18 @@ export default function TrainingMain(){
      useEffect(() => {
       const fetchData = async () => {
         try {
-            const r = await fetch('/api/user/availtrainings');
+            const r = await fetch('/api/training/availabletrainings');
             const j = await r.json();
             if(j.trainings === null) isValidTraining(false);
             if(j.trainings === 'requested'){
               setIsTraining(true);
-              const r1 = await fetch('/api/user/training/requested');
+              const r1 = await fetch('/api/training/trainingrequest');
               const j1 = await r1.json();
               setData(j1);
             } 
             else if (j.trainings === 'enrolled'){
               setHasTraining(true);
-              const r1 = await fetch('/api/user/training/confirmed');
+              const r1 = await fetch('/api/training/schedule');
               const j1 = await r1.json();
               console.log(j1);
               setData(j1);

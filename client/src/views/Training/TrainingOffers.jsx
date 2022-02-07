@@ -16,7 +16,7 @@ export default function TrainingOffers(){
      useEffect(() => {
       const fetchData = async () => {
         try {
-            const r = await fetch('/api/availtrainingoffers');
+            const r = await fetch('/api/training/offer');
             const j = await r.json();
             if(j === undefined || j.length === 0 || j.response === 'enrolled' || j.response === 'null') isoffersExist(false);
             setData(j);            
@@ -29,7 +29,7 @@ export default function TrainingOffers(){
     },[isError]);
 
   async function handle(data){
-    fetch('/api/trainingaccepted ', {
+    fetch('/api/training/schedule ', {
       credentials: 'include',
       method: 'POST',
       headers: {
