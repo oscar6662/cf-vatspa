@@ -141,7 +141,7 @@ async function hasRequestedTraining(id) {
 async function hasTraining(id) {
   try {
     // eslint-disable-next-line max-len
-    const q = 'SELECT * FROM training_scheduled WHERE EXISTS (SELECT * training_scheduled_users WHERE user_id = ?)';
+    const q = 'SELECT * FROM training_scheduled WHERE EXISTS (SELECT * FROM training_scheduled_users WHERE user_id = ?)';
     const r = await query(q, id);
     if (r[0] !== undefined) return true;
   } catch (e) {
