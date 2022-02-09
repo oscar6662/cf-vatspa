@@ -11,7 +11,7 @@ export default function TrainingMain(){
     const [isLoading, setIsLoading] = useState(true);
     const [isError, setIsError] = useState(false);
     const [data, setData] = useState();
-    const [validTraining, isValidTraining] = useState(true);
+    const [validTraining, isValidTraining] = useState(false);
     const [tPanel, toggleTPanel] = useState(false);
     const [training, setTraining] = useState('');
     const [isTraining, setIsTraining] = useState(false);
@@ -40,27 +40,24 @@ export default function TrainingMain(){
         try {
             const r = await fetch('/api/training/availabletrainings');
             const j = await r.json();
-            if(j.trainings === null) isValidTraining(false);
-            if(j.trainings === 'requested'){
+            if(j === 'requested'){
               setIsTraining(true);
               const r1 = await fetch('/api/training/trainingrequest');
               const j1 = await r1.json();
               setData(j1);
             } 
-            else if (j.trainings === 'enrolled'){
+            else if (j === 'enrolled'){
               setHasTraining(true);
               const r1 = await fetch('/api/training/schedule');
               const j1 = await r1.json();
-              console.log(j1);
               setData(j1);
             }
             else{
-              setData(j.trainings);            
+              setData(j);            
             }
         } catch (error) {
             setIsError(true)
         }
-        console.log(data);
         setIsLoading(false);
       };
       fetchData();

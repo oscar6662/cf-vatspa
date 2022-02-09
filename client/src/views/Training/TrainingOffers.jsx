@@ -11,14 +11,14 @@ export default function TrainingOffers(){
     const [isLoading, setIsLoading] = useState(true);
     const [isError, setIsError] = useState(false);
     const [data, setData] = useState([]);
-    const [offersExist, isoffersExist] = useState(true);
+    const [offersExist, isoffersExist] = useState(false);
     const [reload, doReaload] = useState(false);
      useEffect(() => {
       const fetchData = async () => {
         try {
-            const r = await fetch('/api/training/offer');
+            const r = await fetch('/api/training/offers');
             const j = await r.json();
-            if(j === undefined || j.length === 0 || j.response === 'enrolled' || j.response === 'null') isoffersExist(false);
+            if(j !== undefined && j.length !== 0 && j.response !== 'enrolled' && j.response !== 'null') isoffersExist(true);
             setData(j);            
         } catch (error) {
             setIsError(true)

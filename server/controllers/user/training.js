@@ -1,5 +1,6 @@
 import express from 'express';
 import moment from 'moment';
+import fetch from 'node-fetch';
 import { query } from '../db/db.js';
 import { userData } from './users.js';
 import { requireAuthentication } from './auth.js';
@@ -167,9 +168,10 @@ router.get('/api/training/isallowedtorequest',
 
 // TODO: put this function in users.js
 async function isUserActive(cid) {
-  const connectionsLE = await fetch(`https://api.vatsim.net/api/ratings/${cid}/atcsessions/LE/?start=${moment().subtract(90, 'd').format('YYYY-MM-DD')}`);
-  const connectionsGC = await fetch(`https://api.vatsim.net/api/ratings/${cid}/atcsessions/GC/?start=${moment().subtract(90, 'd').format('YYYY-MM-DD')}`);
-  console.log(connectionsLE);
+  let connectionsLE = await fetch(`https://api.vatsim.net/api/ratings/${cid}/atcsessions/LE/?start=${moment().subtract(90, 'd').format('YYYY-MM-DD')}`);
+  let connectionsGC = await fetch(`https://api.vatsim.net/api/ratings/${cid}/atcsessions/GC/?start=${moment().subtract(90, 'd').format('YYYY-MM-DD')}`);
+  if (connectionsLE.detail === 'Not found.') connectionsLE = 0;
+  if (connectionsGC.detail === 'Not found.') connectionsGC = 0;
   const count = connectionsLE.count + connectionsGC.count;
   if (count === 0) return false;
   let hours;
@@ -348,9 +350,9 @@ router.delete('/api/training/trainingrequest', requireAuthentication, async (req
 /*
  * Training Offers
  */
-router.get('/api/training/offers/:id', requireAuthentication, async (req, res) => {
+router.get('/api/training/offers/:id?', requireAuthentication, async (req, res) => {
   const { id } = req.params;
-  if (id !== undefined || parseInt(id, 10) !== undefined || !Number.isNaN(parseInt(id, 10))) {
+  if (id !== undefined) {
     try {
       const q = 'SELECT * FROM training_requests WHERE id = ?';
       const r = await query(q, id);
