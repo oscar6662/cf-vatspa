@@ -3,7 +3,6 @@ import { useLocation } from "react-router-dom";
 import { Menu, Layout } from 'antd';
 import ReactLoading from 'react-loading';
 import logo from '../../assets/img/VATSPA_LOGO.png';
-import 'antd/dist/antd.css';
 //import HealthBar from '../Navbars/HealthBar';
 //import Footer from "../Footers/Footer";
 
@@ -80,29 +79,22 @@ export default function Schema({ children, mentor, admin }) {
             <Menu.Item key="/training/offers"><a href="/training/offers">Ofertas</a></Menu.Item>
 
           </SubMenu>
-          {!isLoading && (
-            isError ? (
-              <Menu.Item key="/error" icon={<MediumOutlined />}>
-                Ha habido un error.
+          {admin && (
+            <SubMenu  icon={<ApartmentOutlined />} title="Admin">
+              <Menu.Item key="/admin">
+                <a href="/admin">Editar Usuarios</a>
               </Menu.Item>
-            ) : (
-              <>
-                <>{
-                  admin && (
-                    <Menu.Item key="/admin" icon={<ApartmentOutlined />}>
-                      <a href="/admin">Editar Usuarios</a>
-                    </Menu.Item>
-                  )}
-                </>
-                <>
-                  {
-                    mentor && (
-                      <Menu.Item key="/mentor" icon={<MediumOutlined />}>
-                        <a href="/mentor">Panel de Mentor</a>
-                      </Menu.Item>
-                    )}
-                </></>
-            ))}
+              <Menu.Item key="/admin/training">
+                <a href="/admin/training">Editar Trainings</a>
+              </Menu.Item>
+            </SubMenu>
+          )}
+          {
+            mentor && (
+              <Menu.Item key="/mentor" icon={<MediumOutlined />}>
+                <a href="/mentor">Panel de Mentor</a>
+              </Menu.Item>
+            )}
         </Menu>
       </Sider>
       <Layout className={s.site__layout}>

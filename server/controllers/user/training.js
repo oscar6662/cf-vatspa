@@ -16,17 +16,26 @@ async function createTrainingDescription(data) {
     short,
     long,
     description,
-    requires,
-    unlocks,
     mentor,
     maxStudents,
-  } = data.body;
+  } = data;
+  let {
+    requires,
+    unlocks,
+  } = data;
+  if (requires !== undefined) {
+    requires = requires.toString();
+  }
+  if (unlocks !== undefined) {
+    unlocks = unlocks.toString();
+  }
   // eslint-disable-next-line max-len
-  const q = 'INSERT (short, long, description, requires, unlocks, mentor, max_students) INTO training_descriptions VALUES (?,?,?,?,?,?,?)';
-  const q2 = 'ALTER TABLE training_users ADD ? TINYINT DEFAULT 0';
+  const q = 'INSERT INTO training_descriptions (`short`, `long`, description, requires, unlocks, mentor, max_students) VALUES (?,?,?,?,?,?,?)';
+  const q2 = `ALTER TABLE training_users ADD ${short} TINYINT DEFAULT 0`;
   try {
-    await query(q, [short, long, description, requires, unlocks, mentor, maxStudents]);
-    await query(q2, short);
+    // eslint-disable-next-line max-len
+    await query(q, [short, long, description, (requires === undefined) ? null : requires, (unlocks === undefined) ? null : unlocks, mentor, maxStudents]);
+    await query(q2);
     return true;
   } catch (error) {
     return false;
@@ -39,19 +48,28 @@ async function updateTrainingDescription(data) {
     newshort,
     long,
     description,
-    requires,
-    unlocks,
     mentor,
     maxStudents,
-  } = data.body;
+  } = data;
+  let {
+    requires,
+    unlocks,
+  } = data;
+  if (requires !== undefined) {
+    requires = requires.toString();
+  }
+  if (unlocks !== undefined) {
+    unlocks = unlocks.toString();
+  }
   // eslint-disable-next-line max-len
-  const q = 'UPDATE training_descriptions SET short = ?, long = ?, description = ?, requires = ?, unlocks = ?, mentor = ?, max_students = ? WHERE short = ?';
+  const q = 'UPDATE training_descriptions SET `short` = ?, `long` = ?, description = ?, requires = ?, unlocks = ?, mentor = ?, max_students = ? WHERE `short` = ?';
   const q2 = 'ALTER TABLE training_users RENAME COLUMN ? TO ?';
   try {
     await query(q, [
       newshort, long,
-      description, requires,
-      unlocks, mentor,
+      description, (requires === undefined) ? null : requires,
+      (unlocks === undefined) ? null : unlocks,
+      mentor,
       maxStudents, originalshort,
     ]);
     if (originalshort !== newshort) {
@@ -85,24 +103,24 @@ async function getTrainingDescriptions() {
 }
 
 router.get('/api/training/descriptions', requireAuthentication, async (req, res) => {
-  const r = getTrainingDescriptions();
+  const r = await getTrainingDescriptions();
   if (r === null) return res.status(500).json('Error parsing training descriptions');
   return res.json(r);
 });
 
 router.post('/api/training/descriptions', requireAuthentication, async (req, res) => {
-  const { data } = req.body;
-  const r = createTrainingDescription(data);
+  const data = req.body;
+  const r = await createTrainingDescription(data);
   if (r) {
-    return res.json('Success');
+    return res.json('success');
   }
   // eslint-disable-next-line max-len
   return res.status(500).json('Unfortunatelly there was an error creating the new training description');
 });
 
 router.patch('/api/training/descriptions', requireAuthentication, async (req, res) => {
-  const { data } = req.body;
-  const r = updateTrainingDescription(data);
+  const data = req.body;
+  const r = await updateTrainingDescription(data);
   if (r) {
     return res.json('Success');
   }
@@ -112,7 +130,7 @@ router.patch('/api/training/descriptions', requireAuthentication, async (req, re
 
 router.delete('/api/training/descriptions', requireAuthentication, async (req, res) => {
   const { short } = req.body;
-  const r = deleteTrainingDescription(short);
+  const r = await deleteTrainingDescription(short);
   if (r) {
     return res.json('Success');
   }

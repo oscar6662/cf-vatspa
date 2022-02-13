@@ -1,20 +1,24 @@
 import { Route, Switch, Redirect, BrowserRouter as Router } from 'react-router-dom';
 import React, { useState, useEffect } from 'react';
 import ReactLoading from 'react-loading';
+
 import Index from "./views/Index/Index";
 import Profile from './views/Profile/Profile';
 import Schema from "./components/Layout/Schema";
 import AdminPanel from './views/AdminPanel/AdminPanel';
 import MentorPanel from './views/MentorPanel/MentorPanel';
 import MentorPanelOffer from './views/MentorPanel/MentorPanelOffer';
-import AdminUserPanel from './views/AdminPanel/AdminUserPanel';
+import AdminUserPanel from './views/AdminPanel/Users/AdminUserPanel';
 import AprovedStations from './views/Profile/AprovedStations';
-import './assets/styles/config.scss';
-import './assets/styles/grid.scss';
 import TrainingMain from './views/Training/TrainingMain';
 import TrainingOffers from './views/Training/TrainingOffers';
-import TrainingDescriptions from './views/AdminPanel/TrainingDescriptions';
+import TrainingDescriptions from './views/AdminPanel/Trainings/TrainingDescriptions';
+import EditTraining from './views/AdminPanel/Trainings/EditTraining/EditTraining';
 
+import 'antd/dist/antd.css';
+import './assets/styles/config.scss';
+import './assets/styles/grid.scss';
+import NewTraining from './views/AdminPanel/Trainings/NewTraining/NewTraining';
 
 export default function App() {
   const [loggedIn, setLoggedIn] = useState(false);
@@ -57,6 +61,12 @@ export default function App() {
             </Route>
             <Route exact path="/admin/training">
               {!admin ? <Redirect to="/profile" /> : <TrainingDescriptions />}
+            </Route>
+            <Route exact path="/admin/training/edit">
+              {!admin ? <Redirect to="/profile" /> : <EditTraining />}
+            </Route>
+            <Route exact path="/admin/training/new">
+              {!admin ? <Redirect to="/profile" /> : <NewTraining />}
             </Route>
             <Route exact path="/mentor">
               {!mentor ? <Redirect to="/profile" /> : <MentorPanel />}

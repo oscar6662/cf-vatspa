@@ -3,9 +3,6 @@ import { useLocation } from 'react-router';
 import ReactLoading from 'react-loading';
 import { Checkbox } from 'antd';
 
-import s from './AdminPanel.module.scss';
-import "antd/lib/checkbox/style/index.css";
-
 export default function AdminUserPanel() {
     const search = useLocation().search;
     const id = new URLSearchParams(search).get('id');
@@ -48,37 +45,31 @@ export default function AdminUserPanel() {
     }
 
     return (
-        <div className={s.main}>
-            {isLoading ? (
-                <div className={s.main__loading}>
-                    <ReactLoading type={'bubble'} color={'black'} height={'20%'} width={'20%'} />
+        isLoading ? (
+                <ReactLoading type={'bubble'} color={'black'} height={'20%'} width={'20%'} />
+        ) : (
+            isError ? (
+                <div>
+                    Unfortunatelly an Error Ocurred
                 </div>
             ) : (
-                isError ? (
+                <>
                     <div>
-                        Unfortunatelly an Error Ocurred
+                        <h1>{data.user_name}</h1>
+                        <h2>{data.id}</h2>
                     </div>
-                ) : (
-                    <div className="">
-                        <div className={s.main__title}>
-                            <h1>{data.user_name}</h1>
-                            <h2>{data.id}</h2>
-                        </div>
-                        <div className={s.main__content}>
-                            <Checkbox
-                                value='mentor'
-                                checked={data.mentor}
-                                onChange={onChange}
-                            >Mentor</Checkbox>
-                            <Checkbox
-                                value='admin'
-                                checked={data.admin}
-                                onChange={onChange}
-                            >Admin</Checkbox>
-                        </div>
-                    </div>
-                )
-            )}
-        </div>
+                        <Checkbox
+                            value='mentor'
+                            checked={data.mentor}
+                            onChange={onChange}
+                        >Mentor</Checkbox>
+                        <Checkbox
+                            value='admin'
+                            checked={data.admin}
+                            onChange={onChange}
+                        >Admin</Checkbox>
+                </>
+            )
+        )
     );
 }
