@@ -5,10 +5,10 @@ import ReactLoading from 'react-loading';
 import Index from "./views/Index/Index";
 import Profile from './views/Profile/Profile';
 import Schema from "./components/Layout/Schema";
-import AdminPanel from './views/AdminPanel/AdminPanel';
+import AdminPanel from './views/AdminPanel/Users/AdminPanel';
 import MentorPanel from './views/MentorPanel/MentorPanel';
 import MentorPanelOffer from './views/MentorPanel/MentorPanelOffer';
-import AdminUserPanel from './views/AdminPanel/Users/AdminUserPanel';
+import AdminUserPanel from './views/AdminPanel/Users/EditUser/AdminUserPanel';
 import AprovedStations from './views/Profile/AprovedStations';
 import TrainingMain from './views/Training/TrainingMain';
 import TrainingOffers from './views/Training/TrainingOffers';
@@ -23,6 +23,7 @@ import NewTraining from './views/AdminPanel/Trainings/NewTraining/NewTraining';
 export default function App() {
   const [loggedIn, setLoggedIn] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
+  const [waitAdmin, waitForAdmin] = useState(true);
   const [admin, setAdmin] = useState(false);
   const [mentor, setMentor] = useState(false);
 
@@ -31,15 +32,24 @@ export default function App() {
       const result = await fetch('/api/authenticated');
       const json = await result.json();
       setLoggedIn(json.loggedIn);
+      setIsLoading(false);
+    };
+    fetchData();
+  }, [loggedIn]);
+
+  useEffect(() => {
+    const fetchData = async () => {
       const r = await fetch('/api/user/admin');
       const j = await r.json();
       setAdmin(Boolean(j));
       const r2 = await fetch('/api/user/mentor');
       const j2 = await r2.json();
       setMentor(Boolean(j2));
-      setIsLoading(false);
+      waitForAdmin(false);
     };
-    fetchData();
+    if (loggedIn) {
+      fetchData();
+    }
   }, [loggedIn]);
 
   return (
@@ -49,31 +59,36 @@ export default function App() {
 
       <Switch>
         {loggedIn ? (
-          <Schema admin = {admin} mentor = {mentor}>
+          <Schema admin={admin} mentor={mentor}>
             <Route exact path="/training" children={<TrainingMain />} />
             <Route exact path="/training/offers" children={<TrainingOffers />} />
             <Route exact path="/user/aprovedstations" children={<AprovedStations />} />
-            <Route exact path="/admin">
-              {!admin ? <Redirect to="/profile" /> : <AdminPanel />}
-            </Route>
-            <Route exact path="/admin/user">
-              {!admin ? <Redirect to="/profile" /> : <AdminUserPanel />}
-            </Route>
-            <Route exact path="/admin/training">
-              {!admin ? <Redirect to="/profile" /> : <TrainingDescriptions />}
-            </Route>
-            <Route exact path="/admin/training/edit">
-              {!admin ? <Redirect to="/profile" /> : <EditTraining />}
-            </Route>
-            <Route exact path="/admin/training/new">
-              {!admin ? <Redirect to="/profile" /> : <NewTraining />}
-            </Route>
-            <Route exact path="/mentor">
-              {!mentor ? <Redirect to="/profile" /> : <MentorPanel />}
-            </Route>
-            <Route exact path="/mentor/offer">
-              {!mentor ? <Redirect to="/profile" /> : <MentorPanelOffer />}
-            </Route>
+            {!waitAdmin && (
+              <>
+                <Route exact path="/admin">
+                  {!admin ? <Redirect to="/profile" /> : <AdminPanel />}
+                </Route>
+                <Route exact path="/admin/user">
+                  {!admin ? <Redirect to="/profile" /> : <AdminUserPanel />}
+                </Route>
+                <Route exact path="/admin/training">
+                  {!admin ? <Redirect to="/profile" /> : <TrainingDescriptions />}
+                </Route>
+                <Route exact path="/admin/training/edit">
+                  {!admin ? <Redirect to="/profile" /> : <EditTraining />}
+                </Route>
+                <Route exact path="/admin/training/new">
+                  {!admin ? <Redirect to="/profile" /> : <NewTraining />}
+                </Route>
+                <Route exact path="/mentor">
+                  {!mentor ? <Redirect to="/profile" /> : <MentorPanel />}
+                </Route>
+                <Route exact path="/mentor/offer">
+                  {!mentor ? <Redirect to="/profile" /> : <MentorPanelOffer />}
+                </Route>
+              </>
+            )}
+
             <Route path="/profile" children={<Profile />} />
             <Route exact path="/" >
               <Redirect to="/profile" />

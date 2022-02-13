@@ -26,7 +26,7 @@ export const trainingColumns = [
         title: 'Action',
         dataIndex: '',
         key: 'x',
-        render: (text, record) => (
+        render: (record) => (
             <Link to={{ pathname: "/admin/training/edit", state: { record } }}>
                 Edit
             </Link>

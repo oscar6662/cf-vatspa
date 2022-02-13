@@ -55,15 +55,15 @@ async function updateTrainingDescription(data) {
     requires,
     unlocks,
   } = data;
-  if (requires !== undefined) {
+  if (requires !== undefined && requires) {
     requires = requires.toString();
   }
-  if (unlocks !== undefined) {
+  if (unlocks !== undefined || unlocks !== null) {
     unlocks = unlocks.toString();
   }
   // eslint-disable-next-line max-len
   const q = 'UPDATE training_descriptions SET `short` = ?, `long` = ?, description = ?, requires = ?, unlocks = ?, mentor = ?, max_students = ? WHERE `short` = ?';
-  const q2 = 'ALTER TABLE training_users RENAME COLUMN ? TO ?';
+  const q2 = `ALTER TABLE training_users RENAME COLUMN ${originalshort} TO ${newshort}`;
   try {
     await query(q, [
       newshort, long,
@@ -73,7 +73,7 @@ async function updateTrainingDescription(data) {
       maxStudents, originalshort,
     ]);
     if (originalshort !== newshort) {
-      await query(q2, [originalshort, newshort]);
+      await query(q2);
     }
     return true;
   } catch (error) {
@@ -83,8 +83,10 @@ async function updateTrainingDescription(data) {
 
 async function deleteTrainingDescription(short) {
   const q = 'DELETE FROM training_descriptions WHERE short = ?';
+  const q2 = `ALTER TABLE training_users DROP COLUMN ${short}`;
   try {
     await query(q, short);
+    await query(q2);
     return true;
   } catch (error) {
     return false;
@@ -138,10 +140,34 @@ router.delete('/api/training/descriptions', requireAuthentication, async (req, r
   return res.status(500).json('Unfortunatelly there was an error deleting the training description');
 });
 
-/*
-*
-*/
+router.get('/api/training/user/:id', requireAuthentication, async (req, res) => {
+  const { id } = req.params;
+  const q = 'SELECT * FROM training_users WHERE id = ?';
+  try {
+    const r = await query(q, id);
+    return res.json(r[0]);
+  } catch (error) {
+    console.log(error);
+    return res.status(500).json('error');
+  }
+});
 
+router.patch('/api/training/user', requireAuthentication, async (req, res) => {
+  const {
+    id,
+    lesson,
+    value,
+  } = req.body;
+  const q = `UPDATE training_users SET ${lesson} = ${value} WHERE id = ?`;
+
+  try {
+    const r = await query(q, id);
+    if (r) return res.json('success');
+  } catch (error) {
+    return res.status(500).json('error');
+  }
+  return res.status(500).json('error');
+});
 /**
  * Is he allowed to ask for training?
  */

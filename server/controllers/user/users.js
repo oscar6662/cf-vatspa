@@ -89,6 +89,7 @@ export async function createUser(data, r) {
     // eslint-disable-next-line max-len
     + '(id, user_name, user_email, rating, local_controller, active_controller, mentor, admin, jwt, access, refresh, date) '
     + 'VALUES (?,?,?,?,?,?,?,?,?,?,?,?)';
+  const q1 = 'INSERT INTO training_users (id) VALUES (?)';
 
   const q4 = `CREATE TABLE IF NOT EXISTS training_history_${data.cid} (`
     + 'training varchar(64) not null,'
@@ -102,6 +103,7 @@ export async function createUser(data, r) {
       data.personal.email, parseInt(data.vatsim.rating.id, 10),
       (data.vatsim.subdivision.code === 'SPN'), false, false, false,
       token, r.access_token, r.refresh_token, moment(expiry).format('YYYY-MM-DD HH:mm:ss.000')]);
+    await query(q1, parseInt(data.cid, 10));
     await query(q4);
   } catch (error) {
     console.log(error);

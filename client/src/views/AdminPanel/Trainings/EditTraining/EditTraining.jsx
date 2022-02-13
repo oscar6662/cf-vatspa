@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from 'react';
 import { useLocation } from 'react-router';
-import ReactLoading from 'react-loading';
 import {
     Form,
     Select,
@@ -48,7 +47,7 @@ export default function EditTraining() {
 
     record.mentor = Boolean(record.mentor)
     const deleteTraining = async () => {
-        await fetch('/api/training/descriptions ', {
+        const r = await fetch('/api/training/descriptions ', {
             credentials: 'include',
             method: 'DELETE',
             headers: {
@@ -59,9 +58,12 @@ export default function EditTraining() {
                 short: record.short,
             })
         });
+        if (r.status === 200) {
+            window.location = "/admin/training"
+        }
     };
     const onFinish = async (values) => {
-        await fetch('/api/training/descriptions ', {
+        const r = await fetch('/api/training/descriptions ', {
             credentials: 'include',
             method: 'PATCH',
             headers: {
@@ -79,6 +81,9 @@ export default function EditTraining() {
                 maxStudents: values.max_students,
             })
         });
+        if (r.status === 200) {
+            window.location = "/admin/training"
+        }
     };
     return (
         <>
@@ -137,14 +142,14 @@ export default function EditTraining() {
                     name="requires"
                     label="Requires"
                 >
-                    <Select mode="multiple" placeholder="Please select required trainings" loading={isLoading} options={data}/>
+                    <Select mode="multiple" placeholder="Please select required trainings" loading={isLoading} options={data} />
                 </Form.Item>
 
                 <Form.Item
                     name="unlocks"
                     label="Unlocks"
                 >
-                    <Select mode="multiple" placeholder="Please select trainings that get unlocked" loading={isLoading} options={data}/>
+                    <Select mode="multiple" placeholder="Please select trainings that get unlocked" loading={isLoading} options={data} />
 
                 </Form.Item>
 

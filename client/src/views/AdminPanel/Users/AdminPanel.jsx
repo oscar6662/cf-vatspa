@@ -3,7 +3,6 @@ import { Table, Input } from "antd";
 import { useTableSearch } from './useTableSearch';
 import { userColumns } from "./columns";
 
-import s from './AdminPanel.module.scss';
 const fetchUsers = async () => {
   const data = await fetch(
     '/api/users'
@@ -21,24 +20,21 @@ export default function AdminPanel() {
   });
 
   return (
-
     <>
-      <div className={s.main__content}>
-        <Search
-          onChange={e => setSearchVal(e.target.value)}
-          placeholder="Search"
-          enterButton
-          style={{ position: 'sticky', top: '0', left: '0' }}
-        />
-        <br /> <br />
-        <Table
-          dataSource={filteredData}
-          columns={userColumns}
-          loading={loading}
-          pagination={false}
-          rowKey='user_name'
-        />
-      </div>
+      <Search
+        onChange={e => setSearchVal(e.target.value)}
+        placeholder="Search"
+        enterButton
+        style={{ position: 'sticky', top: '0', left: '0' }}
+      />
+      <br /> <br />
+      <Table
+        dataSource={filteredData}
+        columns={userColumns}
+        loading={loading}
+        pagination={false}
+        rowKey='user_name'
+      />
     </>
   );
 }

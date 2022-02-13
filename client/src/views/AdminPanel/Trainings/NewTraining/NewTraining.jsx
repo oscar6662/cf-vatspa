@@ -19,7 +19,7 @@ export default function NewTraining() {
         options.push({ label: data[key].long, value: data[key].short });
     }
     const onFinish = async (values) => {
-        await fetch('/api/training/descriptions ', {
+        const r = await fetch('/api/training/descriptions ', {
             credentials: 'include',
             method: 'POST',
             headers: {
@@ -36,6 +36,9 @@ export default function NewTraining() {
                 maxStudents: values.max_students,
             })
         });
+        if (r.status === 200) {
+            window.location = "/admin/training"
+        }
     };
 
     return (
@@ -89,14 +92,14 @@ export default function NewTraining() {
                 name="requires"
                 label="Requires"
             >
-                <Select mode="multiple" placeholder="Please select required trainings" options={options}/>
+                <Select mode="multiple" placeholder="Please select required trainings" options={options} />
             </Form.Item>
 
             <Form.Item
                 name="unlocks"
                 label="Unlocks"
             >
-                <Select mode="multiple" placeholder="Please select trainings that get unlocked" options={options}/>
+                <Select mode="multiple" placeholder="Please select trainings that get unlocked" options={options} />
 
             </Form.Item>
 
