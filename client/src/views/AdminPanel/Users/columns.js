@@ -33,9 +33,9 @@ export const userColumns = [
     dataIndex: '',
     key: 'x',
     render: (record) => (
-        <Link to={{ pathname: "/admin/user", state: { record } }}>
-            Edit
-        </Link>
+      <Link to={{ pathname: "/admin/user", state: { record } }}>
+        Edit
+      </Link>
     ),
-},
+  },
 ];

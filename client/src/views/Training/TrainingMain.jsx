@@ -40,6 +40,7 @@ export default function TrainingMain(){
         try {
             const r = await fetch('/api/training/availabletrainings');
             const j = await r.json();
+            console.log(j);
             if(j === 'requested'){
               setIsTraining(true);
               const r1 = await fetch('/api/training/trainingrequest');
@@ -53,6 +54,7 @@ export default function TrainingMain(){
               setData(j1);
             }
             else{
+              isValidTraining(true);
               setData(j);            
             }
         } catch (error) {

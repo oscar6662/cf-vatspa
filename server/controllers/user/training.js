@@ -158,10 +158,10 @@ router.patch('/api/training/user', requireAuthentication, async (req, res) => {
     lesson,
     value,
   } = req.body;
-  const q = `UPDATE training_users SET ${lesson} = ${value} WHERE id = ?`;
+  const q = `UPDATE training_users SET ${lesson} = ? WHERE id = ?`;
 
   try {
-    const r = await query(q, id);
+    const r = await query(q, [value, id]);
     if (r) return res.json('success');
   } catch (error) {
     return res.status(500).json('error');
@@ -282,7 +282,7 @@ export async function completedTrainings(token) {
 
 router.get('/api/training/availabletrainings', requireAuthentication, async (req, res) => {
   const r = await availableTrainings(req.cookies.token);
-  if (r !== undefined) return res.json({ trainings: await completedTrainings(req.cookies.token) });
+  if (r !== undefined) return res.json({ trainings: await availableTrainings(req.cookies.token) });
   return res.status(500).json({ trainings: 'none' });
 });
 
