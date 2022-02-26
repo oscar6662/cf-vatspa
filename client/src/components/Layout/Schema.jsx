@@ -92,7 +92,10 @@ export default function Schema({ children, mentor, admin }) {
           {
             mentor && (
               <Menu.Item key="/mentor" icon={<MediumOutlined />}>
-                <a href="/mentor">Panel de Mentor</a>
+                <a href="/mentor/offers">Ofertas</a>
+                <a href="/mentor/offers/new">Hacer Oferta</a>
+                <a href="/mentor/requests">Solicitudes</a>
+                <a href="/mentor/debrief">Debriefings</a>
               </Menu.Item>
             )}
         </Menu>

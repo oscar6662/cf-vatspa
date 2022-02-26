@@ -56,6 +56,11 @@ app.get('/api/user/name', requireAuthentication, async (req, res) => {
   return res.json(data.data.personal.name_full);
 });
 
+app.get('/api/user/id', requireAuthentication, async (req, res) => {
+  const { data } = await userData(req.cookies.token);
+  return res.json(data.cid);
+});
+
 app.get('/api/user/admin', requireAuthentication, async (req, res) => {
   return res.json(await userIsAdmin(req.cookies.token));
 });

@@ -2,7 +2,7 @@ import express from 'express';
 import moment from 'moment';
 import fetch from 'node-fetch';
 import { query } from '../db/db.js';
-import { userData } from './users.js';
+import { userData, userIsMentor } from './users.js';
 import { requireAuthentication } from './auth.js';
 
 export const router = express.Router();
@@ -255,14 +255,14 @@ export async function availableTrainings(token) {
       if (r.basic !== false) {
         if (await isUserActive(data.cid)) {
           if (r.mad === true) return 'Nothing';
-          return 'Madrid';
-        } return 'Reactivation';
-      } return 'Familiarization';
+          return ['Madrid'];
+        } return ['Reactivation'];
+      } return ['Familiarization'];
     } return ['Visitor', 'Transfer'];
   }
   if (data.vatsim.subdivision.id === 'SPN') {
     if (await isUserActive(data.cid)) return r.pointer.split(',');
-    return 'Reactivation';
+    return ['Reactivation'];
   }
   if (data.vatsim.rating.id > 2) return ['Visitor', 'Transfer'];
   return ['Transfer', 'IVAO'];
@@ -396,6 +396,11 @@ router.delete('/api/training/trainingrequest', requireAuthentication, async (req
  */
 router.get('/api/training/offers/:id?', requireAuthentication, async (req, res) => {
   const { id } = req.params;
+
+  if (hasRequestedTraining(id) || hasTraining(id)) {
+    return res.json({ response: 'null' });
+  }
+
   if (id !== undefined) {
     try {
       const q = 'SELECT * FROM training_requests WHERE id = ?';
@@ -409,7 +414,7 @@ router.get('/api/training/offers/:id?', requireAuthentication, async (req, res) 
       return res.json({ response: 'null' });
     } catch (e) {
       console.log(e);
-      return res.json({ response: 'error' });
+      return res.status(500).json({ response: 'error' });
     }
   } else {
     const q = 'SELECT * FROM training_offers';
@@ -485,19 +490,19 @@ router.get('/api/training/schedule', requireAuthentication, async (req, res) => 
 
 router.post('/api/training/schedule', requireAuthentication, async (req, res) => {
   const { token } = req.cookies;
-  const data = await userData(token);
+  const { data } = await userData(token);
   const { date, training, mentor } = req.body;
   try {
     // eslint-disable-next-line max-len
-    const q = 'INSERT INTO trainings (id_student, id_mentor, training, availabledate) VALUES (?,?,?,?)';
+    const q = 'INSERT INTO training_scheduled (id_student, id_mentor, training, availabledate) VALUES (?,?,?,?)';
     // eslint-disable-next-line max-len
-    await query(q, [data.data.cid, mentor, training, moment(date).format('YYYY-MM-DD HH:mm:ss.000')]);
+    await query(q, [data.cid, mentor, training, moment(date).format('YYYY-MM-DD HH:mm:ss.000')]);
     const q3 = 'SELECT `key` FROM trainingrequests WHERE id = ?';
-    const r3 = await query(q3, data.data.cid);
+    const r3 = await query(q3, data.cid);
     const q4 = 'DELETE FROM trainingrequests_dates WHERE id = ?';
     await query(q4, r3[0].key);
     const q1 = 'DELETE FROM trainingrequests WHERE id = ?';
-    await query(q1, [data.data.cid]);
+    await query(q1, [data.cid]);
     // eslint-disable-next-line max-len
     const q2 = 'DELETE FROM trainingoffers WHERE (id = ? AND training = ? AND start = ?)';
     await query(q2, [mentor, training, date]);
@@ -530,5 +535,39 @@ router.delete('/api/training/schedule', requireAuthentication, async (req, res) 
   } catch (error) {
     console.log(error);
     res.json({ response: 'error' });
+  }
+});
+
+router.get('/api/training/debrief', requireAuthentication, async (req, res) => {
+  const { token } = req.cookies;
+  const { data } = await userData(token);
+  // TODO: GET all scheduled trainings within a 3 hour range for id = id; (Check documentation)
+  const q = 'SELECT * FROM training_sheduled WHERE id = ? AND availabledate'
+});
+
+router.get('/api/training/admin/mentor', requireAuthentication, async (req, res) => {
+  const { token } = req.cookies;
+  if (!userIsMentor(token)) return res.status(500).json({ response: 'User is not Mentor' });
+  const { data } = await userData(token);
+  const q = 'SELECT mentor_to FROM users WHERE id = ?';
+  try {
+    const r = await query(q, data.cid);
+    return res.json(r[0]);
+  } catch (error) {
+    return res.status(500).json({ response: 'Errror' });
+  }
+});
+
+router.patch('/api/training/admin/mentor', requireAuthentication, async (req, res) => {
+  const { token } = req.cookies;
+  const { mentorTo } = req.body;
+  if (!userIsMentor(token)) return res.status(500).json({ response: 'User is not Mentor' });
+  const { data } = await userData(token);
+  const q = 'UPDATE users SET mentor_to = ? WHERE id = ?';
+  try {
+    await query(q, [mentorTo, data.cid]);
+    return res.json({ response: 'Success' });
+  } catch (error) {
+    return res.status(500).json({ response: 'Errror' });
   }
 });

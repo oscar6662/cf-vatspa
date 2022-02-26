@@ -6,12 +6,14 @@ import Index from "./views/Index/Index";
 import Profile from './views/Profile/Profile';
 import Schema from "./components/Layout/Schema";
 import AdminPanel from './views/AdminPanel/Users/AdminPanel';
-import MentorPanel from './views/MentorPanel/MentorPanel';
-import MentorPanelOffer from './views/MentorPanel/MentorPanelOffer';
+import MentorOffers from './views/MentorPanel/Offers/Offers';
+import MentorOffersNew from './views/MentorPanel/Offers/New/NewOffer';
+import MentorDebrief from './views/MentorPanel/Debriefs/Debrief';
+import MentorRequests from './views/MentorPanel/Requests/Requests';
 import AdminUserPanel from './views/AdminPanel/Users/EditUser/AdminUserPanel';
 import AprovedStations from './views/Profile/AprovedStations';
 import TrainingMain from './views/Training/TrainingMain';
-import TrainingOffers from './views/Training/TrainingOffers';
+import TrainingOffers from './views/Training/Offers/TrainingOffers';
 import TrainingDescriptions from './views/AdminPanel/Trainings/TrainingDescriptions';
 import EditTraining from './views/AdminPanel/Trainings/EditTraining/EditTraining';
 
@@ -80,11 +82,17 @@ export default function App() {
                 <Route exact path="/admin/training/new">
                   {!admin ? <Redirect to="/profile" /> : <NewTraining />}
                 </Route>
-                <Route exact path="/mentor">
-                  {!mentor ? <Redirect to="/profile" /> : <MentorPanel />}
+                <Route exact path="/mentor/offers">
+                  {!mentor ? <Redirect to="/profile" /> : <MentorOffers />}
                 </Route>
-                <Route exact path="/mentor/offer">
-                  {!mentor ? <Redirect to="/profile" /> : <MentorPanelOffer />}
+                <Route exact path="/mentor/offers/new">
+                  {!mentor ? <Redirect to="/profile" /> : <MentorOffersNew />}
+                </Route>
+                <Route exact path="/mentor/requests">
+                  {!mentor ? <Redirect to="/profile" /> : <MentorRequests />}
+                </Route>
+                <Route exact path="/mentor/debrief">
+                  {!mentor ? <Redirect to="/profile" /> : <MentorDebrief />}
                 </Route>
               </>
             )}

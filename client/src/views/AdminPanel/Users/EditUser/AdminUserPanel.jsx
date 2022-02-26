@@ -53,7 +53,8 @@ export default function AdminUserPanel() {
         });
         if (r.status === 200) {
             window.location = "/admin"
-        }    }
+        }
+    }
 
     async function onChange(e) {
         const r = await fetch('/api/admin/editUser ', {
@@ -124,7 +125,7 @@ export default function AdminUserPanel() {
             </Checkbox>
             <Divider />
             <Select
-                loading = {loading}
+                loading={loading}
                 placeholder="Please select pointer to next training"
                 options={options}
                 onChange={onPointerChange}

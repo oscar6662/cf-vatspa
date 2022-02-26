@@ -1,24 +1,23 @@
 import React, {useEffect, useState} from 'react';
 import ReactLoading from 'react-loading';
-import Moment, { deprecationHandler } from 'moment';
+import Moment from 'moment';
 import { Divider, Card, Button } from 'antd';
 
-import s from './TrainingMain.module.scss';
-import './transition.scss';
-const { Meta } = Card;
+import s from '../TrainingMain.module.scss';
+import '../transition.scss';
 
 export default function TrainingOffers(){
     const [isLoading, setIsLoading] = useState(true);
     const [isError, setIsError] = useState(false);
     const [data, setData] = useState([]);
-    const [offersExist, isoffersExist] = useState(false);
-    const [reload, doReaload] = useState(false);
+
      useEffect(() => {
       const fetchData = async () => {
         try {
-            const r = await fetch('/api/training/offers');
+            const id = await fetch('/api/user/id');
+            const idj = await id.json();
+            const r = await fetch(`/api/training/offers/${idj}`);
             const j = await r.json();
-            if(j !== undefined && j.length !== 0 && j.response !== 'enrolled' && j.response !== 'null') isoffersExist(true);
             setData(j);            
         } catch (error) {
             setIsError(true)
@@ -29,7 +28,7 @@ export default function TrainingOffers(){
     },[isError]);
 
   async function handle(data){
-    fetch('/api/training/schedule ', {
+    const r = await fetch('/api/training/schedule ', {
       credentials: 'include',
       method: 'POST',
       headers: {
@@ -42,7 +41,9 @@ export default function TrainingOffers(){
         mentor: data.id
       })
     })
-    doReaload(!reload);
+    if (r.status === 200) {
+      window.location = "/admin"
+  }
   }
 return(
   <>
@@ -54,9 +55,8 @@ return(
             Unfortunatelly an Error Ocurred
         </h1>
       ):(
-        !offersExist ? (
-          data.response === "enrolled" ? <>Ya tienes un training programado </>:
-          <h1>No hay ninguna oferta disponible</h1>
+        data.response === 'null' ? (
+          <p>No hay ningún training disponible o bien ya tienes un training programado.</p>
         ):(
           <div className = {`col-5 ${s.main__avl_trainings}`}>
             {data.map( i => (
