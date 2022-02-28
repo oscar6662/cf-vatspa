@@ -253,7 +253,7 @@ export async function availableTrainings(token) {
   if (data.vatsim.rating.id === 0) return 'Suspended';
   if (data.vatsim.rating.id > 4) {
     if (data.vatsim.subdivision.id !== 'SPN') {
-      if (r.pointer !== null) {
+      if (r[0].pointer !== null) {
         if (await isUserActive(data.cid)) {
           return 'Nothing';
         } return ['Reactivation'];
@@ -261,7 +261,7 @@ export async function availableTrainings(token) {
     } return ['Visitor', 'Transfer'];
   }
   if (data.vatsim.subdivision.id === 'SPN') {
-    if (await isUserActive(data.cid)) return r.pointer.split(',');
+    if (await isUserActive(data.cid)) return r[0].pointer.split(',');
     return ['Reactivation'];
   }
   if (data.vatsim.rating.id > 2) return ['Visitor', 'Transfer'];
