@@ -253,10 +253,9 @@ export async function availableTrainings(token) {
   if (data.vatsim.rating.id === 0) return 'Suspended';
   if (data.vatsim.rating.id > 4) {
     if (data.vatsim.subdivision.id !== 'SPN') {
-      if (r.basic !== false) {
+      if (r.pointer !== null) {
         if (await isUserActive(data.cid)) {
-          if (r.mad === true) return 'Nothing';
-          return ['Madrid'];
+          return 'Nothing';
         } return ['Reactivation'];
       } return ['Familiarization'];
     } return ['Visitor', 'Transfer'];
