@@ -13,6 +13,7 @@ export default function Debrief() {
             try {
                 const r = await fetch('/api/training/debrief');
                 const j = await r.json();
+                console.log(j);
                 setData(j);
             } catch (error) {
                 setIsError(true)

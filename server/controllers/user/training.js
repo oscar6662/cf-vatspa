@@ -295,10 +295,9 @@ router.get('/api/training/completedtrainings', requireAuthentication, async (req
 /*
 * Training Requests
 */
-// TODO pass dates as well
-router.get('/api/training/trainingrequest/:id', requireAuthentication, async (req, res) => {
+router.get('/api/training/trainingrequest/:id?', requireAuthentication, async (req, res) => {
   const { id } = req.params;
-  if (id !== undefined || parseInt(id, 10) !== undefined || !Number.isNaN(parseInt(id, 10))) {
+  if (id !== undefined) {
     try {
       const q = 'SELECT * FROM training_requests WHERE id = ?';
       const r = await query(q, [id]);
@@ -309,12 +308,23 @@ router.get('/api/training/trainingrequest/:id', requireAuthentication, async (re
     }
   } else {
     const q = 'SELECT * FROM training_requests';
-    // const q2 = 'SELECT * FROM training_requests_dates WHERE `key` = ?';
+    const q2 = 'SELECT * FROM training_requests_dates WHERE `id` = ?';
     try {
       const r = await query(q);
-      // const r2 = await query(q2, r[0].key);
+      // loc_array = loc_array.slice(0, -1);
+      if (r[0] !== undefined) {
+        for (let i = 0; i < r.length; i++) {
+          const r2 = await query(q2, r[i].key);
+          const dates = [];
+          for (let j = 0; j < r2.length; j++) {
+            dates.push(moment(r2[j].date).format('DD-MM-YY'));
+          }
+          r[i].dates = dates;
+        }
+      }
       return res.json(r);
     } catch (error) {
+      console.log(error);
       return res.status(500).json({ error });
     }
   }
@@ -396,13 +406,11 @@ router.delete('/api/training/trainingrequest', requireAuthentication, async (req
  */
 router.get('/api/training/offers/:id?', requireAuthentication, async (req, res) => {
   const { id } = req.params;
-
-  if (hasRequestedTraining(id) || hasTraining(id)) {
-    return res.json({ response: 'null' });
-  }
-
   if (id !== undefined) {
     try {
+      if (hasRequestedTraining(id) || hasTraining(id)) {
+        return res.json({ response: 'null' });
+      }
       const q = 'SELECT * FROM training_requests WHERE id = ?';
       const r = await query(q, id);
       if (r[0] !== undefined) {
@@ -541,8 +549,16 @@ router.delete('/api/training/schedule', requireAuthentication, async (req, res) 
 router.get('/api/training/debrief', requireAuthentication, async (req, res) => {
   const { token } = req.cookies;
   const { data } = await userData(token);
-  // TODO: GET all scheduled trainings within a 3 hour range for id = id; (Check documentation)
-  const q = 'SELECT * FROM training_sheduled WHERE id = ? AND availabledate'
+  // eslint-disable-next-line max-len
+  const q = 'SELECT * FROM training_scheduled WHERE id_mentor = ? AND availabledate >= NOW() - INTERVAL 3 HOUR';
+  try {
+    const r = await query(q, data.cid);
+    console.log(data);
+    return res.json(r);
+  } catch (error) {
+    console.log(error);
+    return res.status(500).json('Error');
+  }
 });
 
 router.get('/api/training/admin/mentor', requireAuthentication, async (req, res) => {

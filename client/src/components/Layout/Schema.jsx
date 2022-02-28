@@ -80,7 +80,7 @@ export default function Schema({ children, mentor, admin }) {
 
           </SubMenu>
           {admin && (
-            <SubMenu  icon={<ApartmentOutlined />} title="Admin">
+            <SubMenu icon={<ApartmentOutlined />} title="Admin">
               <Menu.Item key="/admin">
                 <a href="/admin">Editar Usuarios</a>
               </Menu.Item>
@@ -91,12 +91,20 @@ export default function Schema({ children, mentor, admin }) {
           )}
           {
             mentor && (
-              <Menu.Item key="/mentor" icon={<MediumOutlined />}>
-                <a href="/mentor/offers">Ofertas</a>
-                <a href="/mentor/offers/new">Hacer Oferta</a>
-                <a href="/mentor/requests">Solicitudes</a>
-                <a href="/mentor/debrief">Debriefings</a>
-              </Menu.Item>
+              <SubMenu icon={<MediumOutlined />} title="Mentor">
+                <Menu.Item key="/mentor" >
+                  <a href="/mentor/offers">Ofertas</a>
+                </Menu.Item>
+                <Menu.Item>
+                  <a href="/mentor/offers/new">Hacer Oferta</a>
+                </Menu.Item>
+                <Menu.Item>
+                  <a href="/mentor/requests">Solicitudes</a>
+                </Menu.Item>
+                <Menu.Item>
+                  <a href="/mentor/debrief">Debriefings</a>
+                </Menu.Item>
+              </SubMenu>
             )}
         </Menu>
       </Sider>

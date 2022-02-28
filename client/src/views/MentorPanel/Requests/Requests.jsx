@@ -12,6 +12,7 @@ export default function Requests() {
             try {
                 const r = await fetch('/api/training/trainingrequest');
                 const j = await r.json();
+                console.log(j);
                 setData(j);
             } catch (error) {
                 setIsError(true)

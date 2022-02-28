@@ -2,25 +2,36 @@ import { Route, Switch, Redirect, BrowserRouter as Router } from 'react-router-d
 import React, { useState, useEffect } from 'react';
 import ReactLoading from 'react-loading';
 
+// General
 import Index from "./views/Index/Index";
 import Profile from './views/Profile/Profile';
 import Schema from "./components/Layout/Schema";
+
+// Admin
 import AdminPanel from './views/AdminPanel/Users/AdminPanel';
+import AdminUserPanel from './views/AdminPanel/Users/EditUser/AdminUserPanel';
+import EditTraining from './views/AdminPanel/Trainings/EditTraining/EditTraining';
+import TrainingDescriptions from './views/AdminPanel/Trainings/TrainingDescriptions';
+import NewTraining from './views/AdminPanel/Trainings/NewTraining/NewTraining';
+
+// Mentor
 import MentorOffers from './views/MentorPanel/Offers/Offers';
 import MentorOffersNew from './views/MentorPanel/Offers/New/NewOffer';
 import MentorDebrief from './views/MentorPanel/Debriefs/Debrief';
 import MentorRequests from './views/MentorPanel/Requests/Requests';
-import AdminUserPanel from './views/AdminPanel/Users/EditUser/AdminUserPanel';
-import AprovedStations from './views/Profile/AprovedStations';
+
+// Training
 import TrainingMain from './views/Training/TrainingMain';
+import TrainingScheduled from './views/Training/Scheduled/TrainingScheduled';
+import TrainingHistory from './views/Training/History/TrainingHistory';
 import TrainingOffers from './views/Training/Offers/TrainingOffers';
-import TrainingDescriptions from './views/AdminPanel/Trainings/TrainingDescriptions';
-import EditTraining from './views/AdminPanel/Trainings/EditTraining/EditTraining';
+
+// ToDo
+import AprovedStations from './views/Profile/AprovedStations';
 
 import 'antd/dist/antd.css';
 import './assets/styles/config.scss';
 import './assets/styles/grid.scss';
-import NewTraining from './views/AdminPanel/Trainings/NewTraining/NewTraining';
 
 export default function App() {
   const [loggedIn, setLoggedIn] = useState(false);
@@ -63,7 +74,9 @@ export default function App() {
         {loggedIn ? (
           <Schema admin={admin} mentor={mentor}>
             <Route exact path="/training" children={<TrainingMain />} />
+            <Route exact path="/training/scheduled" children={<TrainingScheduled />} />
             <Route exact path="/training/offers" children={<TrainingOffers />} />
+            <Route exact path="/training/history" children={<TrainingHistory />} />
             <Route exact path="/user/aprovedstations" children={<AprovedStations />} />
             {!waitAdmin && (
               <>

@@ -16,7 +16,7 @@ export default function TrainingMain() {
   const [dates, setDates] = useState([]);
 
   async function Handle() {
-    await fetch('/api/training/trainingrequest ', {
+    const r = await fetch('/api/training/trainingrequest ', {
       credentials: 'include',
       method: 'POST',
       headers: {
@@ -27,7 +27,10 @@ export default function TrainingMain() {
         dates: dates,
         training: training,
       })
-    })
+    });
+    if (r.status === 200) {
+      window.location = "/training"
+  }
   }
 
   useEffect(() => {
@@ -55,8 +58,7 @@ export default function TrainingMain() {
   }
 
   return (
-    <div className={`${s.main__content} row`}>
-      {isLoading ? (
+      isLoading ? (
         <ReactLoading type={'bubbles'} color={'black'} />
       ) : (
         isError ? (
@@ -108,7 +110,6 @@ export default function TrainingMain() {
             )
           )
         )
-      )}
-    </div>
+      )
   );
 }

@@ -58,9 +58,10 @@ export default function NewOffer() {
                 const r = await data.json();
                 let options = [];
                 for (const key in r) {
-                    options.push({ label: r[key], value: r[key] });
+                    options.push({ label: r[key].long, value: r[key].short });
                     if (mentorJ === r[key]) break;
                 }
+                console.log(options);
                 setData(options);
             } catch (error) {
                 setIsError(true)
@@ -68,11 +69,11 @@ export default function NewOffer() {
             setIsLoading(false);
         };
         fetchData();
-    }, [data]);
+    }, [isError]);
 
     return (
 
-        <Form name="time_related_controls"  onFinish={onFinish}>
+        <Form name="time_related_controls" onFinish={onFinish}>
             <Form.Item name="date" label="Selecciona la fecha" {...rangeConfig}>
                 <RangePicker showTime format="YYYY-MM-DD HH:mm" />
             </Form.Item>
@@ -82,8 +83,8 @@ export default function NewOffer() {
                 rules={[{ required: true, message: 'Training Required' }]}
             >
                 <Select placeholder="Selecciona training(s)"
-                loading = {isLoading}
-                options = {data}
+                    loading={isLoading}
+                    options={data}
                 />
             </Form.Item>
             <Form.Item
