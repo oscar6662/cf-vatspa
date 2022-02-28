@@ -168,6 +168,7 @@ router.patch('/api/training/user', requireAuthentication, async (req, res) => {
   }
   return res.status(500).json('error');
 });
+
 /**
  * Is he allowed to ask for training?
  */
@@ -483,12 +484,16 @@ router.delete('/api/training/offer', requireAuthentication, async (req, res) => 
  * Scheduled Trainings
  */
 
-router.get('/api/training/schedule', requireAuthentication, async (req, res) => {
-  const { token } = req.cookies;
-  const { data } = await userData(token);
+router.get('/api/training/schedule/:id?', requireAuthentication, async (req, res) => {
+  const { id } = req.params;
   try {
-    const q = 'SELECT * FROM trainings WHERE id_student = ? OR id_mentor = ?';
-    const r = await query(q, [data.cid, data.cid]);
+    if (id === undefined) {
+      const q = 'SELECT * FROM training_scheduled';
+      const r = await query(q);
+      return res.json(r);
+    }
+    const q = 'SELECT * FROM training_scheduled WHERE id_student = ? OR id_mentor = ?';
+    const r = await query(q, [id, id]);
     return res.json(r);
   } catch (e) {
     console.log(e);
@@ -505,46 +510,38 @@ router.post('/api/training/schedule', requireAuthentication, async (req, res) =>
     const q = 'INSERT INTO training_scheduled (id_student, id_mentor, training, availabledate) VALUES (?,?,?,?)';
     // eslint-disable-next-line max-len
     await query(q, [data.cid, mentor, training, moment(date).format('YYYY-MM-DD HH:mm:ss.000')]);
-    const q3 = 'SELECT `key` FROM trainingrequests WHERE id = ?';
+    const q3 = 'SELECT `key` FROM training_requests WHERE id = ?';
     const r3 = await query(q3, data.cid);
-    const q4 = 'DELETE FROM trainingrequests_dates WHERE id = ?';
+    const q4 = 'DELETE FROM training_requests_dates WHERE id = ?';
     await query(q4, r3[0].key);
-    const q1 = 'DELETE FROM trainingrequests WHERE id = ?';
+    const q1 = 'DELETE FROM training_requests WHERE id = ?';
     await query(q1, [data.cid]);
     // eslint-disable-next-line max-len
-    const q2 = 'DELETE FROM trainingoffers WHERE (id = ? AND training = ? AND start = ?)';
+    const q2 = 'DELETE FROM training_offers WHERE (id = ? AND training = ? AND start = ?)';
     await query(q2, [mentor, training, date]);
     res.json({ response: 'training Request added succesfully' });
   } catch (error) {
     console.log(error);
-    res.json({ response: 'error' });
+    res.status(500).json({ response: 'error' });
   }
 });
 
 router.delete('/api/training/schedule', requireAuthentication, async (req, res) => {
   const { token } = req.cookies;
-  const data = await userData(token);
+  const { data } = await userData(token);
   const { date, training, mentor } = req.body;
   try {
     // eslint-disable-next-line max-len
-    const q = 'INSERT INTO trainings (id_student, id_mentor, training, availabledate) VALUES (?,?,?,?)';
-    // eslint-disable-next-line max-len
-    await query(q, [data.data.cid, mentor, training, moment(date).format('YYYY-MM-DD HH:mm:ss.000')]);
-    const q3 = 'SELECT `key` FROM trainingrequests WHERE id = ?';
-    const r3 = await query(q3, data.data.cid);
-    const q4 = 'DELETE FROM trainingrequests_dates WHERE id = ?';
-    await query(q4, r3[0].key);
-    const q1 = 'DELETE FROM trainingrequests WHERE id = ?';
-    await query(q1, [data.data.cid]);
-    // eslint-disable-next-line max-len
-    const q2 = 'DELETE FROM trainingoffers WHERE (id = ? AND training = ? AND start = ?)';
-    await query(q2, [mentor, training, date]);
-    res.json({ response: 'training Request added succesfully' });
+    const q = 'DELETE FROM training_scheduled WHERE id_student = ?, id_mentor = ?, training = ?, availabledate = ?';
+    await query(q, [data.cid, mentor, training, moment(date).format('YYYY-MM-DD HH:mm:ss.000')]);
+    return res.json({ response: 'training Deleted succesfully' });
   } catch (error) {
     console.log(error);
-    res.json({ response: 'error' });
+    return res.status(500).json({ response: 'error' });
   }
 });
+
+// Training Completed. Debrief the Training
 
 router.get('/api/training/debrief', requireAuthentication, async (req, res) => {
   const { token } = req.cookies;
@@ -553,13 +550,41 @@ router.get('/api/training/debrief', requireAuthentication, async (req, res) => {
   const q = 'SELECT * FROM training_scheduled WHERE id_mentor = ? AND availabledate >= NOW() - INTERVAL 3 HOUR';
   try {
     const r = await query(q, data.cid);
-    console.log(data);
-    return res.json(r);
+    return res.json(r.length === 0 ? null : r);
   } catch (error) {
     console.log(error);
     return res.status(500).json('Error');
   }
 });
+
+router.post('/api/training/debrief', requireAuthentication, async (req, res) => {
+  const {
+    studentId,
+    mentorId,
+    training,
+    date,
+    result,
+    comment,
+  } = req.body;
+  try {
+    // eslint-disable-next-line max-len
+    const q = 'DELETE FROM training_scheduled WHERE id_student = ?, id_mentor = ?, training = ?, availabledate = ?';
+    await query(q, [studentId, mentorId, training, moment(date).format('YYYY-MM-DD HH:mm:ss.000')]);
+    // eslint-disable-next-line max-len
+    const q2 = `INSERT INTO training_history_${studentId} (training, pass, mentor, date, comments) VALUES (?,?,?,?,?)`;
+    await query(q2, [training, result, mentorId, moment(date).format('YYYY-MM-DD'), comment]);
+    if (result) {
+      const q3 = 'UPDATE training_users SET ? = true WHERE id = ?';
+      await query(q3, [training, studentId]);
+    }
+    return res.json({ response: 'success' });
+  } catch (error) {
+    console.log(error);
+    return res.status(500).json({ response: 'error' });
+  }
+});
+
+// Up to what training is the mentor allowed give
 
 router.get('/api/training/admin/mentor', requireAuthentication, async (req, res) => {
   const { token } = req.cookies;

@@ -70,9 +70,6 @@ export default function Schema({ children, mentor, admin }) {
             <Menu.Item key="/profile">
               <a href="/">Perfil</a>
             </Menu.Item>
-            <Menu.Item key="/user/aprovedstations">
-              <a href="/user/aprovedstations">Posiciones</a>
-            </Menu.Item>
           </SubMenu>
           <SubMenu key="/training" icon={<BankOutlined />} title="Training">
             <Menu.Item key="/training"><a href="/training">Training</a></Menu.Item>

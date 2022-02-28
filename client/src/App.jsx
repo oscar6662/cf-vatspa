@@ -18,6 +18,7 @@ import NewTraining from './views/AdminPanel/Trainings/NewTraining/NewTraining';
 import MentorOffers from './views/MentorPanel/Offers/Offers';
 import MentorOffersNew from './views/MentorPanel/Offers/New/NewOffer';
 import MentorDebrief from './views/MentorPanel/Debriefs/Debrief';
+import MentorDebriefUser from './views/MentorPanel/Debriefs/User/DebriefUser';
 import MentorRequests from './views/MentorPanel/Requests/Requests';
 
 // Training
@@ -106,6 +107,9 @@ export default function App() {
                 </Route>
                 <Route exact path="/mentor/debrief">
                   {!mentor ? <Redirect to="/profile" /> : <MentorDebrief />}
+                </Route>
+                <Route exact path="/mentor/debrief/user">
+                  {!mentor ? <Redirect to="/profile" /> : <MentorDebriefUser />}
                 </Route>
               </>
             )}
