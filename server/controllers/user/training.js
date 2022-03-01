@@ -58,7 +58,7 @@ async function updateTrainingDescription(data) {
   if (requires !== undefined && requires) {
     requires = requires.toString();
   }
-  if (unlocks !== undefined || unlocks !== null) {
+  if (unlocks !== undefined && unlocks) {
     unlocks = unlocks.toString();
   }
   // eslint-disable-next-line max-len
