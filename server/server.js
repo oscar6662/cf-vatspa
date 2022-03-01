@@ -40,6 +40,7 @@ app.use(authRouter);
 app.use(trainingRouter);
 app.use(adminRouter);
 
+/*
 app.use(function (req, res, next) {
   if (req.path.includes('/api')) {
     if (req.ip.replace('::ffff:', '') !== IP) {
@@ -48,6 +49,7 @@ app.use(function (req, res, next) {
   }
   next();
 });
+*/
 
 const apiRequestLimiter = rateLimit({
   windowMs: 1 * 60 * 1000,
