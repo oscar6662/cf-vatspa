@@ -1,4 +1,5 @@
 import express from 'express';
+import rateLimit from 'express-rate-limit';
 import dotenv from 'dotenv';
 import passport from 'passport';
 import path, { dirname } from 'path';
@@ -27,6 +28,7 @@ dotenv.config();
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const PORT = process.env.PORT || 5000;
+const IP = process.env.IP || '127.0.0.1';
 
 const app = express();
 app.use(express.static(path.join(__dirname, '/../client/build')));
@@ -38,6 +40,26 @@ app.use(authRouter);
 app.use(trainingRouter);
 app.use(adminRouter);
 
+app.use(function (req, res, next) {
+  if (req.path.includes('/api')) {
+    if (req.ip.replace('::ffff:', '') !== IP) {
+      return res.status(401).json({ error: 'Permission denied' });
+    }
+  }
+  next();
+});
+
+const apiRequestLimiter = rateLimit({
+  windowMs: 1 * 60 * 1000,
+  max: 50,
+  handler: function (req, res) {
+    return res.status(429).json({
+      error: 'You sent too many requests. Please wait a while then try again'
+    })
+  }
+});
+
+app.use(apiRequestLimiter)
 
 app.get('/api/authenticated', async (req, res) => {
   if (await isAuthenticated(req)) {
