@@ -31,10 +31,10 @@ async function createTrainingDescription(data) {
   }
   // eslint-disable-next-line max-len
   const q = 'INSERT INTO training_descriptions (`short`, `long`, description, requires, unlocks, mentor, max_students) VALUES (?,?,?,?,?,?,?)';
-  const q2 = `ALTER TABLE training_users ADD ${short} TINYINT DEFAULT 0`;
+  const q2 = `ALTER TABLE training_users ADD ${short.trim()} TINYINT DEFAULT 0`;
   try {
     // eslint-disable-next-line max-len
-    await query(q, [short, long, description, (requires === undefined) ? null : requires, (unlocks === undefined) ? null : unlocks, mentor, maxStudents]);
+    await query(q, [short.trim(), long, description, (requires === undefined) ? null : requires, (unlocks === undefined) ? null : unlocks, mentor, maxStudents]);
     await query(q2);
     return true;
   } catch (error) {
@@ -63,10 +63,10 @@ async function updateTrainingDescription(data) {
   }
   // eslint-disable-next-line max-len
   const q = 'UPDATE training_descriptions SET `short` = ?, `long` = ?, description = ?, requires = ?, unlocks = ?, mentor = ?, max_students = ? WHERE `short` = ?';
-  const q2 = `ALTER TABLE training_users RENAME COLUMN ${originalshort} TO ${newshort}`;
+  const q2 = `ALTER TABLE training_users RENAME COLUMN ${originalshort} TO ${newshort.trim()}`;
   try {
     await query(q, [
-      newshort, long,
+      newshort.trim(), long,
       description, (requires === undefined) ? null : requires,
       (unlocks === undefined) ? null : unlocks,
       mentor,
@@ -140,6 +140,9 @@ router.delete('/api/training/descriptions', requireAuthentication, async (req, r
   return res.status(500).json('Unfortunatelly there was an error deleting the training description');
 });
 
+/**
+ * manually edit users trainings
+*/
 router.get('/api/training/user/:id', requireAuthentication, async (req, res) => {
   const { id } = req.params;
   const q = 'SELECT * FROM training_users WHERE id = ?';
@@ -171,7 +174,7 @@ router.patch('/api/training/user', requireAuthentication, async (req, res) => {
 
 /**
  * Is he allowed to ask for training?
- */
+*/
 
 async function hasRequestedTraining(id) {
   try {
@@ -258,7 +261,7 @@ export async function availableTrainings(token) {
           return 'Nothing';
         } return ['Reactivation'];
       } return ['Familiarization'];
-    } return ['Visitor', 'Transfer'];
+    }return ['Visitor', 'Transfer'];
   }
   if (data.vatsim.subdivision.id === 'SPN') {
     if (await isUserActive(data.cid)) return r.pointer.split(',');
@@ -270,9 +273,9 @@ export async function availableTrainings(token) {
 
 export async function completedTrainings(token) {
   const { data } = await userData(token);
-  const q = `SELECT * FROM training_history_${data.cid}`;
+  const q = 'SELECT * FROM training_history WHERE student_id = ?';
   try {
-    const r = await query(q);
+    const r = await query(q, [data.cid]);
     return r[0];
   } catch (e) {
     console.log(e);
@@ -570,8 +573,8 @@ router.post('/api/training/debrief', requireAuthentication, async (req, res) => 
     const q = 'DELETE FROM training_scheduled WHERE id_student = ?, id_mentor = ?, training = ?, availabledate = ?';
     await query(q, [studentId, mentorId, training, moment(date).format('YYYY-MM-DD HH:mm:ss.000')]);
     // eslint-disable-next-line max-len
-    const q2 = `INSERT INTO training_history_${studentId} (training, pass, mentor, date, comments) VALUES (?,?,?,?,?)`;
-    await query(q2, [training, result, mentorId, moment(date).format('YYYY-MM-DD'), comment]);
+    const q2 = 'INSERT INTO training_history (training, pass, mentor, date, comments, student_id) VALUES (?,?,?,?,?,?)';
+    await query(q2, [training, result, mentorId, moment(date).format('YYYY-MM-DD'), comment], studentId);
     if (result) {
       const q3 = 'UPDATE training_users SET ? = true WHERE id = ?';
       await query(q3, [training, studentId]);

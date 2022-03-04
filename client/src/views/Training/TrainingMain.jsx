@@ -30,7 +30,7 @@ export default function TrainingMain() {
     });
     if (r.status === 200) {
       window.location = "/training"
-  }
+    }
   }
 
   useEffect(() => {
@@ -58,58 +58,81 @@ export default function TrainingMain() {
   }
 
   return (
-      isLoading ? (
-        <ReactLoading type={'bubbles'} color={'black'} />
+    isLoading ? (
+      <ReactLoading type={'bubbles'} color={'black'} />
+    ) : (
+      isError ? (
+        <h1>
+          Unfortunatelly an Error Ocurred
+        </h1>
       ) : (
-        isError ? (
+        data.trainings === 'Nothing' && (
+          <h1>No hay ningún Training Disponible.</h1>
+        ),
+        data.trainings === 'Suspended' && (
+          <>
+            <h1>Tu cuenta de Vatsim está suspendida.</h1>
+            <ul>
+              <li>
+                Puedes Reactivar tu cuenta <a href="https://my.vatsim.net/reactivate">aquí</a>
+              </li>
+              <li>
+                Y si tienes problemas con eso, puedes abrir un ticket <a href="https://support.vatsim.net/open.php">aquí</a>
+              </li>
+            </ul>
+          </>
+        ),
+        data.trainings === 'requested' && (
+          <>
+            <h1>Ya has solicitado el training que tenías disponible.</h1>
+            <ul>
+              <li>
+                Consulta ofertas <a href='/training/offers'> aquí</a>.
+              </li>
+              <li>
+                O edita tu solicitud aquí <a></a>
+              </li>
+            </ul>
+          </>
+        ),
+        data.trainings === 'enrolled' && (
+          <>
           <h1>
-            Unfortunatelly an Error Ocurred
+            Tienes un training programado.
           </h1>
-        ) : (
-          data.trainings === 'Nothing' ? (
-            <h1>No hay ningún Training Disponible.</h1>
-          ) : (
-            data.trainings === 'requested' ? (
-              <Card>
-                Ya has solicitado el training que tenías disponible. Consulta en <a href='/training/offers'> ofertas</a>.
+          <p>Para cancelar el training...</p>
+          </>
+        ),
+        Array.isArray(data.trainings) && (
+          <>
+            <div className={`${s.main__avl_trainings}`}>
+              {data.trainings.map(i => (
+                <div key={i} className={s.main__box}>
+                  <Card style={{ width: 300, margin: 16 }}>
+                    {i}
+                    <Divider />
+                    <Button onClick={handleClick(i)} type="primary">Solicitar Training</Button>
+                  </Card>
+                  <Divider />
+                </div>
+              ))}
+            </div>
+            <CSSTransition in={tPanel} timeout={200} classNames={"my-node"} unmountOnExit>
+              <Card style={{ margin: 16 }}>
+                <div className={`${s.main__date_selection__close}`}>
+                  <button className={s.main__date_selection__button} onClick={close()}>Cerrar</button>
+                </div>
+                Selecciona las fechas en que estés disponible
+                <MultipleDatePicker
+                  onSubmit={dates => setDates(dates)}
+                />
+                <Divider></Divider>
+                <Button onClick={Handle}>Confirmar</Button>
               </Card>
-            ) : (
-              data.trainings === 'enrolled' ? (
-                <Card>
-                  Ya has ASD el training que tenías disponible. Consulta en <a href='/training/offers'> ofertas</a>.
-                </Card>
-              ) : (
-                <>
-                  <div className={`${s.main__avl_trainings}`}>
-                    {data.trainings.map(i => (
-                      <div key={i} className={s.main__box}>
-                        <Card style={{ width: 300, margin: 16 }}>
-                          {i}
-                          <Divider />
-                          <Button onClick={handleClick(i)} type="primary">Solicitar Training</Button>
-                        </Card>
-                        <Divider />
-                      </div>
-                    ))}
-                  </div>
-                  <CSSTransition in={tPanel} timeout={200} classNames={"my-node"} unmountOnExit>
-                    <Card style={{ margin: 16 }}>
-                      <div className={`${s.main__date_selection__close}`}>
-                        <button className={s.main__date_selection__button} onClick={close()}>Cerrar</button>
-                      </div>
-                      Selecciona las fechas en que estés disponible
-                      <MultipleDatePicker
-                        onSubmit={dates => setDates(dates)}
-                      />
-                      <Divider></Divider>
-                      <Button onClick={Handle}>Confirmar</Button>
-                    </Card>
-                  </CSSTransition>
-                </>
-              )
-            )
-          )
+            </CSSTransition>
+          </>
         )
       )
+    )
   );
 }

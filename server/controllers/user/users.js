@@ -91,20 +91,12 @@ export async function createUser(data, r) {
     + 'VALUES (?,?,?,?,?,?,?,?,?,?,?,?)';
   const q1 = 'INSERT INTO training_users (id) VALUES (?)';
 
-  const q4 = `CREATE TABLE IF NOT EXISTS training_history_${data.cid} (`
-    + 'training varchar(64) not null,'
-    + 'pass boolean not null,'
-    + 'mentor varchar(64) not null,'
-    + 'date date not null,'
-    + 'comments varchar(1024));';
-
   try {
     await query(q, [parseInt(data.cid, 10), data.personal.name_full,
       data.personal.email, parseInt(data.vatsim.rating.id, 10),
       (data.vatsim.subdivision.code === 'SPN'), false, false, false,
       token, r.access_token, r.refresh_token, moment(expiry).format('YYYY-MM-DD HH:mm:ss.000')]);
     await query(q1, parseInt(data.cid, 10));
-    await query(q4);
   } catch (error) {
     console.log(error);
     return error;
